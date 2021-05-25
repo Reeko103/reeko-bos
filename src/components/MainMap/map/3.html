@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>进入建筑</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="lib/fengmap.core.min.js"></script>
+  <script src="lib/fengmap.control.min.js"></script>
+  <script src="lib/fengmap.render.min.js"></script>
+</head>
+
+<body>
+<!-- 加载地图容器 -->
+<div id="map" style="width: 100%;height: 100%"></div>
+<button onclick="move2Point()" style="position: absolute;top:200px">透明电视</button>
+<button onclick="changeG1()" style="position: absolute;top:220px">去展厅</button>
+<button onclick="changeG2()" style="position: absolute;top:240px">去会议室</button>
+<button onclick="drawText()" style="position: absolute;top:260px">文字标注</button>
+<button onclick="drawImg()" style="position: absolute;top:280px">图片标注</button>
+<button onclick="drawPoint()" style="position: absolute;top:300px">定位标注</button>
+
+<script>
+
+  let clickedPOI = false;
+  let selectedModel = null;
+
+  const fmapID = '1386480942031998978';
+  let map = new fengmap.FMMap({
+    container : document.getElementById("map"), //设置显示地图容器
+    mapServerURL:'./map/' + fmapID,//地图数据位置
+    mapThemeURL: './map/theme',//设置主题
+    defaultThemeName: '1386480942031998978',//设置默认主题
+    appName:'挪码室内停车场',           //开发者应用名称
+    key:'811d64f99bbf27a006d418895c984dd9',  //开发者申请应用下web服务的key
+    defaultVisibleGroups:[1],           //设置初始显示楼层，数组格式，可单个，可多个
+    defaultFocusGroup: 1,               //初始聚焦楼层
+    focusAlphaMode : true,
+    focusAlpha : 0
+  });
+
+  map.openMapById(fmapID);//mapId
+
+  let ctlOpt = new fengmap.controlOptions({
+    position: fengmap.controlPositon.RIGHT_TOP,//默认在右上角
+    showBtnCount: 7,  //默认显示楼层的个数
+    allLayer:false,   //初始是否是多层显示，默认单层显示
+    needAllLayerBtn: true, //是否显示多层/单层切换按钮
+    //位置x,y的偏移量
+    offset: {
+      x: -100,
+      y: 20
+    }
+  });
+
+  let toolControl = new fengmap.toolControl(map,{
+    init2D:false,   //初始化2D模式
+    groupsButtonNeeded:false,   //设置为false表示只显示2D,3D切换按钮
+    //点击按钮的回调方法,返回type表示按钮类型,value表示对应的功能值
+    clickCallBack:function(type,value){
+      // console.log(type,value);
+    }
+  });
+
+  map.on('loadComplete', () => {
+    map.mapScaleLevel = 18;
+    map.setMapScaleLevelRange(1,29);
+    groupControl = new fengmap.scrollGroupsControl(map, ctlOpt);
+    map.showCompass = true;
+
+    let fmSkyEffect = new fengmap.FMSkyEffect(map)
+    fmSkyEffect.enable(true)
+    fmSkyEffect.setTime(2);
+    fmSkyEffect.setAttribute({
+      scale:2000,
+      turbidity:10,
+      rayleigh:0.2,
+      luminance:1
+    })
+  });
+
+
+  //点击地图事件
+  map.on('mapClickNode', function (event) {
+    const target = event.target;
+    switch (event.nodeType) {
+      case fengmap.FMNodeType.FLOOR:
+        break;
+      case fengmap.FMNodeType.MODEL:
+        break;
+      case fengmap.FMNodeType.IMAGE_MARKER:
+        break;
+      case fengmap.FMNodeType.TEXT_MARKER:
+        break;
+      case fengmap.FMNodeType.POLYGON_MARKER:
+        break;
+      case fengmap.FMNodeType.FACILITY:
+        break;
+    }
+
+    alert("你点击了"+target.name);
+  });
+
+  const drawText = () =>{
+    const groupLayer = map.getFMGroup(1);
+    const layer = new fengmap.FMTextMarkerLayer();   //实例化TextMarkerLayer
+    groupLayer.addLayer(layer);    //添加文本标注层到模型层。否则地图上不会显示
+    const tm = new fengmap.FMTextMarker({
+      name: "这是一个文字标注",
+      x:11585014.56544649,
+      y:3555734.302250239,
+      //文字标注样式设置
+      fillcolor: "255,0,0", //填充色
+      fontsize:20, //字体大小
+      strokecolor: "255,255,0", //边框色
+      alpha: 0.5   //文本标注透明度
+    });
+    layer.addMarker(tm);  //文本标注层添加文本Marker
+    tm.alwaysShow();    // 在marker载入完成后，设置 "一直可见"，不被其他层遮挡
+  }
+
+  const drawImg = () =>{
+    const groupLayer = map.getFMGroup(1);
+    const layer = new fengmap.FMTextMarkerLayer();   //实例化TextMarkerLayer
+    groupLayer.addLayer(layer);    //添加文本标注层到模型层。否则地图上不会显示
+    const im = new fengmap.FMImageMarker({
+      x:11585014.56544649,
+      y:3555734.302250239,
+      url:'1.jpg',       //设置图片路径
+      size:256,                               //设置图片显示尺寸
+      height: 4                              //标注高度，大于model的高度
+    });
+    layer.addMarker(im);  //图片标注层添加图片Marker
+    im.alwaysShow();
+  }
+
+  const drawPoint = () =>{
+
+    var locationMarker = new fengmap.FMLocationMarker({
+      url:'1.jpg',
+      size:86,  //设置图片显示尺寸
+      height:10  //marker标注高度
+    });
+    map.addLocationMarker(locationMarker);
+    locationMarker.setPosition({
+      x:11585014.56544649,
+      y:3555734.302250239,
+      groupID:1  //设置定位点所在楼层
+    });
+  }
+
+
+  const move2Point = ()=>
+  {
+    map.scaleTo({duration:0.5,scale:900,update:()=>{}});
+
+    const pnt = {
+      x:11585014.56544649,
+      y:3555734.302250239,
+      groupID:1,
+      callback:()=>{}
+    };
+
+    map.moveTo(pnt);
+    map.rotateTo({to:45,duration:0.5,callback:()=>{}})
+  }
+
+  const changeG2 = ()=>{
+    const pnt = {
+      x:11585220.492042458,
+      y:3555746.9515087493,
+      groupID:2,
+      callback:function(){}
+    };
+    map.moveTo(pnt);
+    map.scaleTo({duration:0.5,scale:2800,update:()=>{}});
+    map.rotateTo({to:0,duration:0.5,callback:()=>{}})
+  }
+
+  const changeG1 = ()=>{
+    const pnt = {
+      x:11585220.492042458,
+      y:3555746.9515087493,
+      groupID:1,
+      callback:function(){}
+    };
+    map.moveTo(pnt);
+    map.scaleTo({duration:0.5,scale:1800,update:()=>{}});
+    map.rotateTo({to:315,duration:0.5,callback:()=>{}})
+  }
+</script>
+</body>
+
+</html>

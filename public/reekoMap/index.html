@@ -1,0 +1,826 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href="lib/bootstrap.min.css">
+    <link href=" css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="fengMap"></div>
+
+    <button id="btn-show" class="btn btn-default" style="position:absolute;left:14px;top:40px;">显示</button>
+
+    <div id="prompt" style="display: none;">顺序选取起终点:
+        <div class="checkbox m-r-xs">
+            <input type="radio" value="random" name="optionsRadios">
+            <label>任意地点</label>
+        </div>
+        <div class="checkbox m-r-xs">
+            <input type="radio" checked="" value="center" name="optionsRadios">
+            <label>模型中心点</label>
+        </div>
+
+    </div>
+
+    <!--信息提示-->
+    <div id="message" class="alert alert-warning hidden">
+        <a href="#" class="close" data-dismiss="alert">&times;</a>
+        <span id="message_info"><strong>警告！</strong>起点和终点不能在同一个模型上。</span>
+    </div>
+    <div id="description" style="display: none;">
+        <p>最小X值：<span id="minX"></span></p>
+        <p>最小Y值：<span id="minY"></span></p>
+        <p>最大X值：<span id="maxX"></span></p>
+        <p>最大Y值：<span id="maxY"></span></p>
+
+        <div style="margin-top:20px">
+            <p>当前地图加载时间：<span id="time"></span></p>
+            <p>当前地图尺寸：<span id="scaleLevel"></span></p>
+        </div>
+    </div>
+
+
+    <!-- 设置面板 -->
+    <div id="setting" style="display: none;">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <p class="panel-title">设置楼层高度</p>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="groupSpaceTxt">楼层高度</label>
+                    <input type="text" class="form-control" id="groupSpaceTxt" onkeydown="onKeyDown(event)"
+                        placeholder="楼层高度" value='50'>
+                </div>
+                <button class="btn btn-default" id="changeGroupSpace">设置</button>
+            </div>
+        </div>
+    </div>
+    <!--搜索-->
+    <div id="textSearchPanel" style="position:absolute; width: 60%; top:55px; left: 20%;display: none;">
+        <input type="text" class="form-control" id="textSearch" placeholder="铺位名称">
+        <ul class="searchList"></ul>
+    </div>
+
+    <!--模型拾取-->
+    <div class="pick-model"></div>
+
+    <div class="btn-group-vertical" data-toggle="buttons" style="position:absolute; bottom: 80px; right: 205px; display: none;">
+        <button id="btn6" class="btn btn-default" onclick="switchLanguage()">中英文切换</button>
+        <button id="btn1" class="btn btn-default" onclick="hideLabel()">隐藏文本标注层</button>
+        <button id="btn2" class="btn btn-default" onclick="hidePoi()">隐藏公共设施标注层</button>
+        <button id="btn3" class="btn btn-default" onclick="hideStore()">隐藏store</button>
+        <button id="btn4" class="btn btn-default" onclick="hideExtent()">隐藏extent</button>
+        <button id="btn5" class="btn btn-default" onclick="switchNaviMode()">切换最短路径</button>
+    </div>
+    <div class="btn-group-vertical" data-toggle="buttons" style="position:absolute; bottom: 80px; right: 10px; display: none;">
+        <button id="btn1-all" class="btn btn-default" onclick="hideAllLabel()">隐藏所有层文本标注</button>
+        <button id="btn2-all" class="btn btn-default" onclick="hideAllPoi()">隐藏所有楼层公共设施标注</button>
+        <button id="btn3-all" class="btn btn-default" onclick="hideAllStore()">隐藏所有楼层store</button>
+        <button id="btn4-all" class="btn btn-default" onclick="hideAllExtent()">隐藏所有楼层extent</button>
+        <button id="btn5-all" class="btn btn-default" onclick="pickModel()">开启模型拾取</button>
+        <button id="btn6-all" class="btn btn-default" onclick="showHideModel()">点击隐藏外部模型</button>
+    </div>
+	<script src="./lib/dat.gui.min.js"></script>
+    <script src="./lib/jquery-2.1.4.min.js"></script>
+    <script src="./lib/fengmap.core.min.js"></script>
+    <script src="./lib/fengmap.control.min.js"></script>
+    <script src="./lib/fengmap.render.min.js"></script>
+    <script src="./lib/fengmap.analyzer.min.js"></script>
+    <script src="./lib/fengmap.navi.min.js"></script>
+	<script src="./js/path.js"></script>
+    <script>
+        document.title = '地图显示V' + fengmap.VERSION;
+
+        var beginTime = new Date().valueOf();
+        var map;
+        var fmapID = '408903';
+        var navi;
+        var searchAnalyser;
+        var groupControl;
+        var clickCount = 0;
+        var lastCoord = null;
+        var naviLines = [];
+        var radioVal;
+        //控制文本标注层显示/隐藏
+        var labelVisible = true;
+        //控制POI标注层显示/隐藏
+        var poiVisible = true;
+        //控制extent显示/隐藏
+        var extentVisible = true;
+        //控制store显示/隐藏
+        var storeVisible = true;
+        var labelAllVisible = true;
+        var poiAllVisible = true;
+        var extentAllVisible = true;
+        var storeAllVisible = true;
+        var isClick = false;
+        var isBestRoute = true;
+        var isHideExternalModel = false;
+        var hideExternalModels = [];
+		var effectRender = null;
+		var gui = null;     //gui控件对象
+		var effectController = {
+            exposure: 1.1,          //曝光强度
+            bloomStrength: 0.5,     //发光强度：值越大越亮
+            bloomThreshold: 0.1,   //发光阈值：建议取值范围：0-1，值越小越亮，1为不发光
+            bloomRadius: 0.5    //发光半径：建议取值范围：0-1，值越大，发光范围越大
+        };
+        window.onload = function () {
+
+            //$('#description').hide();
+                    //$('#setting').hide();
+                    //$('#prompt').hide();
+                    //$('#textSearchPanel').hide();
+                    //$('.btn-group-vertical').hide();
+
+
+            window.map = map = new fengmap.FMMap({
+                //必要，地图容器
+                container: document.getElementById('fengMap'),
+                //地图数据位置
+                mapServerURL: './data/' + fmapID,
+                //主题数据位置
+                mapThemeURL: './data/theme',
+                //默认主题名称
+                defaultThemeName: '3b91d03288204d02368dd4f68fc1f189',
+                mapScaleLevelRange: [18,24],
+                defaultMapScaleLevel: 18,
+                //是否开启对数深度缓存来处理巨大的比例差异带来的闪面问题
+                logarithmicDepthBuffer: true,
+
+                defaultTiltAngle: 10,	        //倾斜角，默认45度
+                defaultMinTiltAngle: 10,		//最小倾斜角
+                defaultMaxTiltAngle: 60,		//最大倾斜角
+
+                //必要，地图应用名称，通过蜂鸟云后台创建
+                appName: '蜂鸟研发SDK_2_0',
+                //必要，地图应用密钥，通过蜂鸟云后台获取
+                key: '57c7f309aca507497d028a9c00207cf8'
+            });
+
+            //打开Fengmap服务器的地图数据和主题
+			initEffectRender(map);
+            map.openMapById(fmapID);
+
+           // map.showCompass = true;
+
+
+            //地图加载完成回调
+            map.on('loadComplete', function () {
+				//updateLevel('200110');
+                //map.visibleGroupIDs = map.listGroups.map((item) => item.gid);    //初始显示全部楼层
+                //map.focusGroupID = 1;                                          //初始聚焦楼层
+
+                addBgImg(); //加载背景图片
+
+                // 楼层控件
+                loadScrollFloorCtrl();
+                // 2、3D控件
+                showViewMode();
+                setScaleLevel();
+                var endTime = new Date().valueOf();
+                $('#time').html(endTime - beginTime + 'ms');
+
+                $('#minX').html(map.minX);
+                $('#minY').html(map.minY);
+                $('#maxX').html(map.maxX);
+                $('#maxY').html(map.maxY);
+
+                hideExtent();
+
+                // map.mapView.camera.near *= 2.5;
+                // map.mapView.camera.far *= 10;
+                // map.mapView.camera.updateProjectionMatrix();
+
+                // 创建搜索类
+                searchAnalyser = new fengmap.FMSearchAnalyser(map);
+				map.setBackgroundColor('#FFFFFF', 0.0);
+				
+            });
+
+            radioVal = $('input[name="optionsRadios"]:checked ').val();
+            $('input[name="optionsRadios"]').on('click', function () {
+                if ($(this).val() !== radioVal) {
+                    naviLines.length = 0;
+                    if (navi) navi.clearAll();
+                    clickCount = 0;
+                    lastCoord = null;
+                }
+                radioVal = $('input[name="optionsRadios"]:checked ').val();
+            });
+
+
+
+            //点击地图事件。开始选点开始后，点击地图一次为起点，第二次点击为终点
+            map.on('mapClickNode', function (event) {
+                console.log(event);
+            });
+			//外部模型加载完成事件
+            map.on('gltfLoaded', function () {
+
+                addFlowLine(path);
+            });
+            map.on('mapScaleLevelChanged', function (json) {
+                $('#scaleLevel').html(json.mapScale);
+            });
+			
+			function updateLevel(typeid){
+				var groups = map.nodeManager._scenes[fmapID].groups;
+				//for(var i in obj) {
+				for(var i in groups){
+					var group = groups[i];
+					var target = group._layers['extent'][0];
+					//console.log(target.scene);
+					var models = group._layers['model'][0]._models;
+					for (var ii in models){
+						var model = models[ii];
+						if((''+model.bdata.type) === (''+typeid)){
+							target.scene.add(model.renderNode.clone());
+							model.renderNode.visible=false;
+						}						
+					}
+				}
+				map.setRenderList();
+			}
+
+            // 加载滚动型楼层切换控件
+            function loadScrollFloorCtrl() {
+                var scrollFloorCtlOpt = {
+                    //默认在右上角
+                    position: fengmap.FMControlPosition.RIGHT_TOP,
+                    //初始楼层按钮显示个数配置。默认显示5层,其他的隐藏，可滚动查看
+                    showBtnCount: 6,
+                    //初始是否是多层显示，默认单层显示false
+                    allLayer: false,
+                    //是否显示多层/单层切换按钮
+                    needAllLayerBtn: true,
+                    //位置x,y的偏移量
+                    offset: {
+                        x: -20,
+                        y: 220
+                    }
+                };
+                var scrollFloorControl = new fengmap.FMScrollGroupsControl(map, scrollFloorCtlOpt);
+                scrollFloorControl.onChange(function (groups, allLayer) {
+                    //groups 表示当前要切换的楼层ID数组,
+                    //allLayer表示当前楼层是单层状态还是多层状态。
+                    console.log(groups);
+                });
+            }
+
+            // 显示2、3D切换按钮
+            function showViewMode() {
+                var toolCtlOpt = {
+                    position: fengmap.FMControlPosition.RIGHT_TOP,
+                    //位置x,y的偏移量
+                    offset: {
+                        x: -20,
+                        y: 100
+                    },
+                    //初始化2D模式
+                    init2D: false,
+                    //当楼层切换按钮存在时,设置初始默认-false表示显示单层状态，true表示显示多层状态,.
+                    // initGroups: false,
+                    //设置为false表示不显示,即只显示2D,3D切换按钮
+                    groupsButtonNeeded: false,
+                    //设置为false表示不显示,即只显示楼层切换按钮
+                    viewModeButtonNeeded: true
+                };
+                //创建工具控件
+                new fengmap.FMToolControl(map, toolCtlOpt);
+
+            }
+
+            //画路径
+            function createrNavi(naviLines) {
+                if (!navi) {
+                    navi = new fengmap.FMNavigation({
+                        map: map,
+                        autoRoute: false,
+                        locationMarkerUrl: 'image/pointer.png',
+                        locationMarkerSize: 32,
+                        followPosition: true,   //模拟导航时是否地图跟随,默认true
+                        followAngle: true,      //模拟导航时是否改变地图角度，默认false
+                        // offset: 1,
+                        offsetHeight:9,  //路径高度
+                        tiltAngle: 80,   //导航跟随倾斜角度
+                        naviLanguage: fengmap.FMLanguageType.ZH,   //导航结果文字描述内容语言
+                        naviMode: fengmap.FMNaviMode.MODULE_SHORTEST,   //最优最短路径规划
+                        naviPriority: fengmap.FMNaviPriority.PRIORITY_DEFAULT,  //梯类优先级
+                        lineStyle: {
+                            lineType: fengmap.FMLineType.FMARROW,
+                            lineWidth: 6,
+                        }
+                    });
+                }
+                if (naviLines.length == 1) {
+                    navi.setStartPoint({
+                        x: naviLines[0].x,
+                        y: naviLines[0].y,
+                        groupID: naviLines[0].groupID,
+                        url: 'image/start.png',
+                        size: 32,
+                        height: 1
+                    });
+                } else if (naviLines.length == 2) {
+                    navi.setEndPoint({
+                        x: naviLines[1].x,
+                        y: naviLines[1].y,
+                        groupID: naviLines[1].groupID,
+                        url: 'image/end.png',
+                        size: 32,
+                        height: 1
+                    });
+					
+                    console.log(navi.startData, navi.endData);
+                    navi.route(isBestRoute ? fengmap.FMNaviMode.MODULE_BEST : fengmap.FMNaviMode.MODULE_SHORTEST);
+					console.log(navi);
+                    navi.drawNaviLine();
+                    naviLines.length = 0;
+                }
+            };
+
+            $('#textSearch').on('input', function (e) {
+                var keyword = $(this).val().trim();
+                $('.searchList').html('');
+                if (!keyword) return;
+                var params = {};
+                params.keyword = keyword;
+                params.nodeType = fengmap.FMNodeType.MODEL;
+                //查询数据
+                var results = searchByParams(params);
+                buildHtml(results);
+            })
+
+
+            $('#btn-show').on('click', function () {
+                var text = $(this).text();
+                var display = true;
+                if (text === '显示') {
+                    text = "隐藏";
+                    display = false;
+                } else {
+                    text = "显示"
+                    display = true;
+                }
+
+
+                if (display === false) {
+                    $('#description').show();
+                    $('#setting').show();
+                    $('#prompt').show();
+                    $('#textSearchPanel').show();
+                    $('.btn-group-vertical').show();
+                } else {
+                    $('#description').hide();
+                    $('#setting').hide();
+                    $('#prompt').hide();
+                    $('#textSearchPanel').hide();
+                    $('.btn-group-vertical').hide();
+                }
+
+                $(this).text(text);
+            })
+
+        };
+
+        //清除navi
+        function clearNavi() {
+            if (navi) navi.clearAll();
+            clickCount = 0;
+            lastCoord = null;
+            naviLines.length = 0;
+        };
+
+        //获取任意点坐标
+        function coordTransformation(event) {
+            var randomCoord;
+            var pt1;
+            var eventInfo = event.eventInfo.coord;
+            //获取焦点层
+            var currentGid = map.focusGroupID;
+            //获取鼠标点击的坐标
+            var domEvent = event.eventInfo.domEvent;
+
+            if (domEvent instanceof MouseEvent) {
+                pt1 = {
+                    x: domEvent.clientX,
+                    y: domEvent.clientY,
+                    z: map.getGroupHeight(event.groupID) + 1,
+                    groupID: event.groupID
+                }
+                randomCoord = map.coordScreenToMap(pt1.x, pt1.y, pt1.z);
+                randomCoord.groupID = event.groupID ? event.groupID : currentGid;
+            } else {
+                pt1 = {
+                    x: domEvent.changedTouches[0].clientX,
+                    y: domEvent.changedTouches[0].clientY,
+                    z: map.getGroupHeight(event.groupID) + 1,
+                    groupID: event.groupID
+                }
+                randomCoord = map.coordScreenToMap(pt1.x, pt1.y, pt1.z);
+                randomCoord.groupID = event.groupID ? event.groupID : currentGid;
+            }
+            return randomCoord;
+        };
+
+        //获取模型点坐标
+        function coordCenter(event) {
+            var modelLabel = event.label;
+            var centerCoord;
+            if (!modelLabel) {
+                centerCoord = {
+                    x: event.mapCoord.x,
+                    y: event.mapCoord.y,
+                    groupID: event.groupID
+                }
+            } else {
+                centerCoord = {
+                    x: modelLabel.mapCoord.x,
+                    y: modelLabel.mapCoord.y,
+                    groupID: event.groupID
+                };
+            }
+            return centerCoord;
+        };
+
+        //修改楼层间距
+        $('#changeGroupSpace').on('click', function () {
+            map.groupSpace = parseInt($("#groupSpaceTxt").val());
+        });
+
+        //关键字搜索
+        function searchByParams(params) {
+            var searchRequest = new fengmap.FMSearchRequest()
+            //配置keyword参数
+            if (params.keyword && params.keyword != '') {
+                searchRequest.keyword = params.keyword;
+            }
+
+            //配置groupID参数
+            if (params.groupID) {
+                searchRequest.groupID = params.groupID
+            }
+
+            //配置FID参数
+            if (params.FID) {
+                searchRequest.FID = params.FID;
+            }
+            //配置typeID参数
+            if (params.typeID != null) {
+                searchRequest.typeID = params.typeID;
+            }
+
+            //配置nodeType参数
+            if (params.nodeType != null) {
+                searchRequest.nodeType = params.nodeType;
+            }
+            var data = [];
+            //查询出所有楼层的地图元素的"keyword= keyword"的对象集合。
+            searchAnalyser.query(searchRequest, function (result) {
+                data = result;
+            });
+            return data;
+        }
+
+        function buildHtml(results) {
+            $('.searchList').empty();
+            for (var i = 0; i < results.length; i++) {
+                var item = results[i];
+                var floor = getFloorName(item.groupID) ? getFloorName(item.groupID) : '';
+                var name = item.name ? item.name : '<空>';
+
+                $('.searchList').append($('<li></li>').text(
+                    name + '【' + floor.toLocaleUpperCase() + '】'
+                ).data('fid', item.FID).on('click', function () {
+                    $('#textSearch').val($(this).text())
+                    var fid = $(this).data('fid');
+                    var model = searchByParams({ FID: fid });
+                    if (model.length === 0) return;
+                    var data = model[0];
+                    var gid = data.groupID;
+                    var mapCoord = data.mapCoord;
+                    var x = mapCoord.x;
+                    var y = mapCoord.y;
+                    var z = mapCoord.z;
+                    $('.searchList').html('');
+                    map.visibleGroupIDs = map.visibleGroupIDs.length === 1 ? [gid] : map.visibleGroupIDs;
+                    map.focusGroupID = gid;
+                    map.moveTo({
+                        groupID: gid, x: x, y: y, callback: function () {
+                            addMarkers({ x: x, y: y });
+                        }
+                    });
+                    hidePickModel();
+                }));
+            }
+        }
+
+        function getFloorName(gid) {
+            var floor = null;
+            for (var i = 0; i < map.listGroups.length; i++) {
+                var item = map.listGroups[i];
+                if (gid === item.gid) {
+                    floor = item.gname;
+                    break;
+                }
+            }
+            return floor;
+        }
+
+        function addMarkers(params) {
+            //获取当前聚焦楼层
+            var group = map.getFMGroup(map.focusGroupID);
+
+            /*//实例化方法1：自定义图片标注层
+             layer = new fengmap.FMImageMarkerLayer();
+             //添加图片标注层到模型层
+             group.addLayer(layer);*/
+
+            //实例化方法2：
+            //返回当前层中第一个imageMarkerLayer,如果没有，则自动创建
+            var layer = group.getOrCreateLayer('imageMarker');
+
+            //图标标注对象，默认位置为该楼层中心点
+            var gpos = group.mapCoord;
+            var im = new fengmap.FMImageMarker({
+                //标注x坐标点
+                x: params.x,
+                //标注y坐标点
+                y: params.y,
+                //设置图片路径
+                url: 'image/blueImageMarker.png',
+                //设置图片显示尺寸
+                size: 32,
+                //标注高度，大于model的高度
+                height: 4
+            });
+            layer.addMarker(im);
+        }
+
+        function setScaleLevel() {
+            $('#scaleLevel').html(map.mapScaleLevel);
+        }
+
+
+        function hideExtent() {
+            if (map) {
+                extentVisible = !extentVisible;
+                map.getFMGroup(map.focusGroupID).layers.extent[0].show = extentVisible;
+            }
+        }
+
+        function hideStore() {
+            if (map) {
+                storeVisible = !storeVisible;
+                map.getFMGroup(map.focusGroupID).layers.model[0].show = storeVisible;
+            }
+        }
+
+        //文字标注中英文切换
+        function switchLanguage() {
+            if (map) {
+                var curLanguage = map.labelLanguage;
+                if (curLanguage == fengmap.FMLanguageType.ZH) {
+                    map.labelLanguage = fengmap.FMLanguageType.EN;
+                } else {
+                    map.labelLanguage = fengmap.FMLanguageType.ZH;
+                }
+            }
+        }
+
+        function hideLabel() {
+            if (map) {
+                labelVisible = !labelVisible;
+                var group = map.getFMGroup(map.focusGroupID);
+
+                //遍历图层
+                group.traverse(function (fm) {
+                    if (fm instanceof fengmap.FMLabelLayer) {
+                        fm.show = labelVisible;
+                    }
+                });
+
+            }
+        }
+
+        function hidePoi() {
+            if (map) {
+                poiVisible = !poiVisible;
+                var group = map.getFMGroup(map.focusGroupID);
+
+                //遍历图层
+                group.traverse(function (fm) {
+                    if (fm instanceof fengmap.FMFacilityLayer) {
+                        fm.show = poiVisible;
+                    }
+                });
+
+            }
+        }
+
+
+        function hideAllExtent() {
+            if (map) {
+                extentAllVisible = !extentAllVisible;
+                map.callAllLayersByAlias('extent', function (layer) {
+                    layer.show = extentAllVisible;
+                })
+            }
+        }
+
+        function hideAllStore() {
+            if (map) {
+                storeAllVisible = !storeAllVisible;
+                map.callAllLayersByAlias('model', function (layer) {
+                    layer.show = storeAllVisible;
+                })
+            }
+        }
+
+        function hideAllLabel() {
+            if (map) {
+                labelAllVisible = !labelAllVisible;
+                for (var i = 0; i < map.groupIDs.length; i++) {
+                    var group = map.getFMGroup(map.groupIDs[i]);
+                    group.traverse(function (fm) {
+                        if (fm instanceof fengmap.FMLabelLayer) {
+                            fm.show = labelAllVisible;
+                        }
+                    });
+                }
+            }
+        }
+
+        function hideAllPoi() {
+            if (map) {
+                poiAllVisible = !poiAllVisible;
+                for (var i = 0; i < map.groupIDs.length; i++) {
+                    var group = map.getFMGroup(map.groupIDs[i]);
+                    group.traverse(function (fm) {
+                        if (fm instanceof fengmap.FMFacilityLayer) {
+                            fm.show = poiAllVisible;
+                        }
+                    });
+                }
+            }
+        }
+
+        function pickModel() {
+            if (isClick) {
+                $('#btn5-all').html('开启模型拾取');
+                isClick = false;
+                hidePickModel();
+            }
+            else {
+                $('#btn5-all').html('关闭模型拾取');
+                isClick = true;
+            }
+        }
+
+        function switchNaviMode() {
+            if (isBestRoute) {
+                $('#btn5').html('切换最优路径');
+                isBestRoute = false;
+            }
+            else {
+                $('#btn5').html('切换最短路径');
+                isBestRoute = true;
+            }
+        }
+
+        function hidePickModel() {
+            $('.pick-model').html('').hide();
+        }
+
+        function showPickModel(event) {
+            $('.pick-model').html('fid:' + event.target.FID
+                + '<br/>' + 'typeID:' + event.target.typeID
+                + '<br/>' + 'name:' + event.target.name
+                + '<br/>' + 'ename:' + event.target.ename
+                + '<br/>' + 'height:' + event.target.height
+                + '<br/>' + 'min:' + event.target.minlevel
+                + '<br/>' + 'max:' + event.target.maxlevel).show();
+        }
+
+
+        function showHideModel() {
+            if (isHideExternalModel) {
+                $("#btn6-all").html('开启点击隐藏外部模型');
+            } else {
+                $("#btn6-all").html('关闭点击隐藏外部模型');
+            }
+            for (var i = 0; i < hideExternalModels.length; i++) {
+                hideExternalModels[i].show = true;
+            }
+            hideExternalModels = [];
+            isHideExternalModel = !isHideExternalModel;
+        }
+
+        function addBgImg() {
+            var url = "./image/bg.jpg";
+		    map.setBackground(url);
+        }
+		function addFlowLine(pathdata) {
+            var z = 0.5;
+            var features = pathdata.features;
+            var flowdata = {};
+            var flowlength = {};
+            for (var i = 0; i < features.length; i++) {
+                var coordinates = features[i].geometry.coordinates;
+                var points = [];
+                var lineLength = 0;
+                for (var ii = 0; ii < coordinates.length; ii++) {
+                    points.push(coordinates[ii][0]);
+                    points.push(coordinates[ii][1]);
+                    points.push(z);
+                    if (ii > 0) {
+                        var dis_x = (coordinates[ii][0] - coordinates[ii - 1][0]);
+                        var dis_y = (coordinates[ii][1] - coordinates[ii - 1][1]);
+                        var length = Math.sqrt(dis_x * dis_x + dis_y * dis_y);
+                        lineLength = lineLength + length;
+                    }
+                }
+                flowdata['points' + (i + 10)] = points;
+                if (lineLength < 50) {
+                    flowlength['points' + (i + 10)] = 1;
+                } else {
+                    flowlength['points' + (i + 10)] = 1;
+                }
+            }
+            console.log(flowdata);
+            console.log(flowlength);
+            var lineoption = {
+                center: map.center,
+                lineWidth: 3,
+                color: "#0d7fd8",//流光线的流光色
+                backgroundColor: "#071016",//流光线的底色
+                opacity: 0.5,
+                lineLength: 100,
+                speed: 1
+            }
+            var flowLineLayer = map.getFMGroup(map.focusGroupID).getOrCreateLayer('flmMarker');
+            for (var key in flowdata) {
+                var value = flowdata[key];
+                lineoption.lineLength = flowlength[key];
+                console.log(lineoption.lineLength);
+                var optins = Object.assign(lineoption, { points: value });
+                var flowLineMarker = new fengmap.FMFlowLineMarker(optins);
+                flowLineLayer.addMarker(flowLineMarker);
+            }
+            effectRender.addBloomList(flowLineLayer);
+			var modellayer = map.nodeManager._scenes[fmapID].groups[1]._layers.externalModel[0];
+			effectRender.addBloomList(modellayer);
+			setFloodLightCtrl();
+        }
+        function initEffectRender(map) {
+            effectRender = map.getEffectRenderer();
+            effectRender.enableBloom(true); //启用bloom发光效果
+            //设置初始化参数，非必填，可使用sdk内部默认初始参数
+            effectRender.bloomPass.strength = 0.5;
+            effectRender.bloomPass.threshold = 0.1;
+            effectRender.bloomPass.radius = 0.5;
+            effectRender.renderer.toneMappingExposure = 1.15;
+        }
+		//设发光光参数
+        function setFloodLightCtrl() {
+			if (!gui) {
+				gui = new dat.GUI;
+
+				//创建分组
+				folder = gui.addFolder('Bloom Parameters');
+
+				//曝光强度
+				folder.add(effectController, 'exposure', 0.1, 2).onChange(function (value) {
+					effectRender.renderer.toneMappingExposure = Math.pow(value, 4.0);
+				});
+
+				//发光阈值：建议取值范围：0-1，值越小越亮，1为不发光
+				folder.add(effectController, 'bloomThreshold', 0.0, 1.0).step(0.01).onChange(function (value) {
+					effectRender.bloomPass.threshold = Number(value);
+				});
+
+				//发光强度：值越大越亮
+				folder.add(effectController, 'bloomStrength', 0.0, 10.0).onChange(function (value) {
+					effectRender.bloomPass.strength = Number(value);
+				});
+
+				//发光半径：建议取值范围：0-1，值越大，发光范围越大
+				folder.add(effectController, 'bloomRadius', 0.0, 1.0).step(0.01).onChange(function (value) {
+					effectRender.bloomPass.radius = Number(value);
+				});
+				folder.open();  //展开分组
+			}
+
+			gui.domElement.style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>

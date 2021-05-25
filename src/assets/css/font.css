@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'DIGITAL 7MONO';
+    src: url('.././font/DIGITAL-7MONO.TTF');
+}
+/* 1.下载字体.ttf放到assets/font下
+2.在font.css中引入字体
+3.在main.js中引入font.css
+4.s使用字体 */

@@ -1,0 +1,25 @@
+$defaultColor: #22B8FC; /// 默认色
+$defaultBgColor: #22B8FC; /// 默认背景色
+
+/// 元素超出省略...
+@mixin ellipsis($num) {
+    word-wrap:break-word; // 通知浏览器不按单词处理元素
+    overflow: hidden;
+    display:-webkit-box;
+    -webkit-line-clamp: $num;
+    -webkit-box-orient: vertical;
+}
+/// 阴影效果
+@mixin boxShadow($one,$twos,$three,$four,$color) {
+    -moz-box-shadow: $one $twos $three $four $color;
+    -webkit-box-shadow: $one $twos $three $four $color;
+    box-shadow: $one $twos $three $four $color;
+}
+
+/// 背景渐变色
+@mixin bgGradualChange($direction,$start,$end) {
+    background: linear-gradient(to $direction, $start, $end);
+    background: -ms-linear-gradient(to $direction, $start, $end);
+    background: -webkit-linear-gradient(to $direction, $start, $end);
+    background: -moz-linear-gradient(to $direction, $start, $end);
+}
