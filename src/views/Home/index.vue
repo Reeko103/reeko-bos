@@ -105,7 +105,7 @@ export default {
         if (this.websock) {
             this.websock.close(); // 关闭websocket连接
         }
-        this.initWebSocket(); // 长链接
+        //this.initWebSocket(); // 长链接
     }, 
     mounted(){
     },
@@ -211,7 +211,7 @@ export default {
             let self = this;
             this.timer = setInterval(() => {
                 try {
-                    self.websock.send('test')
+                    self.websock.send('tests')
                     console.log('发送消息');
                 }catch(err){
                     console.log('断开了：' + err);
@@ -223,7 +223,7 @@ export default {
         websocketonmessage(e) {
             // var vm = this;
             // let data1Json = JSON.parse(e.data);
-            console.log(e.data);
+            console.log(e);
             switch (e.data) {
                 case '高空抛物':
                     this.navClass (0);

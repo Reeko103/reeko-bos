@@ -134,35 +134,7 @@
 
   <div class="reekoRight animate__animated animate__bounceInRight" :class="inAndOut">
     <div class="content">
-      <img class="Title" src="@/assets/icon/home/Building/img01.png">
-      <ul class="list">
-        <li>
-            <div class="name">温度</div>
-            <liquidfill class="public" id="one" :status="1" />
-            <span class="num">达标值87%</span>
-        </li>
-        <li>
-            <div class="name">湿度</div>
-            <liquidfill class="public" id="two" :status="2" />
-            <span class="num">达标值87%</span>
-        </li>
-        <li>
-            <div class="name">CO2值</div>
-            <liquidfill class="public" id="three" :status="3" />
-            <span class="num">达标值87%</span>
-        </li>
-        <li>
-            <div class="name">PM2.5</div>
-            <liquidfill class="public" id="four" :status="4" />
-            <span class="num">达标值87%</span>
-        </li>
-      </ul>
-      <!-- 设备统计 -->
-      <img class="img02" src="@/assets/icon/home/Building/img02.png">
-      <!-- 排水管理 -->
-      <img class="img03" src="@/assets/icon/home/Building/img03.png">
-      <!-- 用电一览 -->
-      <img class="img04" src="@/assets/icon/home/Building/img04.png">
+      <img class="img01" src="@/assets/icon/home/Building/img01.png">
     </div> 
     <!-- 开关 -->
     <img v-if="status" @click="switchC(1)" class="switch" src="@/assets/icon/home/Building/enter.png">
@@ -240,6 +212,37 @@
   <div v-if="seemhq && mhq" @click="seemhq = false" class="seeDangerousEvents seemhq  animate__animated animate__rubberBand">
     <video class="vi" src="../../assets/video/video02.mp4" autoplay loop controls="controls"></video>
   </div>
+
+
+  <div class="assetDetails animate__animated animate__bounceIn" v-if="assetDetailsStatus">
+    <div class="top">
+      <span>资产信息</span>
+      <img class="close" src="@/assets/icon/home/Building/img02.png">
+    </div>
+    <ul class="lists">
+      <li>
+        <span>固定资产状态：</span><span>使用中</span>
+      </li>
+      <li>
+        <span>资产名称：</span><span>DELL笔记本电脑</span>
+      </li>
+      <li>
+        <span>资产编号：</span><span>C2903824</span>
+      </li>
+      <li>
+        <span>资产型号：</span><span>E6540</span>
+      </li>
+      <li>
+        <span>启用日期：</span><span>2021-05-20</span>
+      </li>
+      <li>
+        <span>存放地点：</span><span>1F大厅前台</span>
+      </li>
+      <li>
+        <span>保管人：</span><span>王强</span>
+      </li>
+    </ul>
+  </div>
 </div>
 </template>
 
@@ -284,6 +287,8 @@ export default {
       seezcyz: false,
       mhq: false,
       seemhq: false,
+      assetDetailsData: {}, /// 资产详情数据
+      assetDetailsStatus: false, /// 资产详情状态
     }
   },
   mounted () {
@@ -418,6 +423,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/// 资产详情
+.assetDetails{position: absolute;top: 227px;right: 463px;z-index: 1;width: 270px;padding:0 25px 40px;background:url("../../assets/icon/home/Building/img02Bg.png") no-repeat;background-size: 100% 100%;color: #ffffff;
+  .top{display: flex;align-items: center;justify-content: space-between;font-size: 16px;
+  border-bottom: 1px solid #33EAFF;padding: 22px 0 18px;
+    .close{width: 16px;height: 16px;cursor: pointer;}
+  }
+  .lists{
+    font-size: 14px;
+    li{padding-top: 27px;display: flex;align-items: center;justify-content: space-between;}
+  }
+}
 // 报警
 .dangerousEvents{position: absolute;top: 272px;right: 450px;z-index: 1;width: 278px;height: 192px; background:url("../../assets/icon/home/callThePoliceBg.png") no-repeat;background-size: 100% 100%;
   display: flex;
@@ -507,29 +523,13 @@ color: #ffffff;
   }
 }
 // 资产
-.assets{width: 546px;height: 708px;position: absolute;top: 164px;left: 123px;z-index: 1;}
+.assets{width: 524px;height: 704px;position: absolute;top: 164px;left: 123px;z-index: 1;}
 // 右部分
 .reekoRight{
   
     position: absolute;top: 80px;right: 12px;z-index: 1;width: 409px;height: calc(100% - 100px); background:url("../../assets/icon/home/reekoRightBg.png") no-repeat;color: #FFFFFF;background-size: 100% 100%;
-  .content{padding: 0 16px 10px; height: calc(100% - 10px); display: flex; flex-direction: column; justify-content: space-around;
-    .Title{width: 358px;height: 25px;margin: 10px 0 20px;}
-    // 室内环境
-    .list{display: flex;align-items: center;
-    justify-content: space-between;
-    font-size: 12px;
-      li{display: flex;flex-direction: column;align-items: center;justify-content: center;
-        .num{color: #E7E7E7;}
-        .name{color: #01CCE7;}
-      }
-    }
-    // 设备统计
-    .img02{width: 365px;height: 199px;}
-    //排水管理
-    .img03{width: 355px;height: 156px;}
-    // 用电一览
-    .img04{width: 343px;height: 317px;}
-    .public{width: 80px;height: 80px;margin: 8px 0;}
+  .content{height: calc(100% - 10px); display: flex; flex-direction: column; justify-content: space-around;
+    .img01{width: 100%;height: 100%;}
   }
   // 开关
   .switch{

@@ -1,6 +1,7 @@
 <template>
 <div>
-  <h3>疫情防控</h3>
+  <img class="left animate__animated animate__bounceInLeft" src="@/assets/icon/home/EpidemicSituation/img01.png">
+  <img class="right animate__animated animate__bounceInRight" src="@/assets/icon/home/EpidemicSituation/img02.png">
 </div>
 </template>
 
@@ -20,4 +21,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.left{position: absolute;top: 80px;left: 11px;z-index: 1;width: 409px;height: calc(100% - 100px);}
+.right{position: absolute;top: 80px;right: 11px;z-index: 1;width: 409px;height: calc(100% - 100px);}
 </style>

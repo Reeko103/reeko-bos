@@ -27,6 +27,7 @@ div {
   z-index: 100000;
   transform: translate(-50%, -50%);
   border-radius: 10px;
+  font-size: 50px;
 }
 /* vue动画过渡效果设置 */
 .fade-enter-active,
