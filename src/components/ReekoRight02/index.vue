@@ -1,6 +1,5 @@
 <template>
 <div class="reekoM">
-  <map-one></map-one>
   <!-- 导航 -->
   <ul class="nav animate__animated animate__bounceInLeft">
       <li v-for="(list,index) in navData" :key="index"

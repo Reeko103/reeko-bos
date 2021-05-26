@@ -103,18 +103,18 @@
         <!-- 视频检测 -->
         <img class="Title" style="width: 330px;" src="@/assets/icon/home/reekoRight04/img03.png">
         <ul class="video">
-                <li>
-                <video src="./as.mp4" autoplay="autoplay" loop="loop" controls="controls"></video>
-                </li>
-                <li>
-                <video src="./as.mp4" autoplay="autoplay" loop="loop" controls="controls"></video>
-                </li>
-                <li>
-                <video src="./as.mp4" autoplay="autoplay" loop="loop" controls="controls"></video>
-                </li>
-                <li>
-                <video src="./as.mp4" autoplay="autoplay" loop="loop" controls="controls"></video>
-                </li>
+                    <!-- <li>
+                    <video src="./as.mp4" autoplay="autoplay" loop="loop" controls="controls"></video>
+                    </li>
+                    <li>
+                    <video src="./as.mp4" autoplay="autoplay" loop="loop" controls="controls"></video>
+                    </li>
+                    <li>
+                    <video src="./as.mp4" autoplay="autoplay" loop="loop" controls="controls"></video>
+                    </li>
+                    <li>
+                    <video src="./as.mp4" autoplay="autoplay" loop="loop" controls="controls"></video>
+                    </li> -->
         </ul>
         <!-- 能耗管理 -->
         <img class="Title" style="width: 330px;" src="@/assets/icon/home/reekoRight04/img04.png">

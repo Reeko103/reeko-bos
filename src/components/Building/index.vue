@@ -462,7 +462,7 @@ export default {
     .active{color: #16E5EF;}
 }
 // 楼层
-.layerNum{position: absolute;top: 77px;left: 560px;z-index: 1; display: flex;flex-direction: column;justify-content: center;align-items: center;
+.layerNum{position: absolute;top: 77px;left: calc(50% - 253px);z-index: 1; display: flex;flex-direction: column;justify-content: center;align-items: center;
 color: #ffffff;
     .top{display: flex;align-items: center;justify-content: space-between;
         img{width: 40px;height: 40px;}

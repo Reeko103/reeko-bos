@@ -13,13 +13,7 @@
 
 
 <script>
-import  '../../../public/map/lib/dat.gui.min.js' //注意路径
-import  '../../../public/map/lib/fengmap.core.min.js' //注意路径
-import  '../../../public/map/lib/fengmap.control.min.js' //注意路径
-import  '../../../public/map/lib/fengmap.render.min.js' //注意路径
-import  '../../../public/map/lib/fengmap.analyzer.min.js' //注意路径
-import  '../../../public/map/lib/fengmap.navi.min.js' //注意路径
-import  '../../../public/map/js/path.js' //注意路径
+import bus from '@/utils/bus'
 var fmapID = '1386480942031998978';
 var effectRender = null;
 var gui = null;     //gui控件对象
@@ -63,6 +57,7 @@ export default {
     return {
         map: '',
         top:0,
+        camera: 0,
     }
   },
   mounted(){
@@ -84,6 +79,7 @@ export default {
                 case '综合总览':
                 case '指挥中心':
                     G_PAUSE = false         /// 开启旋转
+                    map.mapScaleLevel= 18
                     map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
                     map.scaleTo({duration:.5,scale:2000,callback:()=>{
                         map.tiltAngle = 10      /// 倾斜角度
@@ -92,19 +88,35 @@ export default {
                     
                     break;
                 case '人流量':
-                
-                    map.tiltTo({duration:.5,to:30,callback:()=>{}});/// 倾斜角度
-                    map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
-                    // map.moveTo({ x: 11583635.618584398, y: 3576562.1645018533, groupID:1, time:.5, callback:()=>{
-                       // map.tiltAngle = 30      /// 倾斜角度
-                    // map.scaleTo({duration:.5,scale:2000,update:()=>{
-                    //     map.rotateAngle = 16    // 旋转角度
-                    //     map.tiltAngle = 10      // 倾斜角度
-                    // }}); // 缩放
-                    // }}); /// 定位
-                    
+                    G_PAUSE = true                  // 暂停旋转
+                    map.mapScaleLevel= 22
+                    map.moveTo({ x: 11583336.912161592, y: 3576025.7743093525, groupID:2, time:.5, callback:()=>{
+                        map.rotateAngle = -90
+                        
+                    }}); /// 定位
+                    // var heat
+                    // /* 构造热力 */
+                    // heat = new fengmap.FMHeatMap.create(map);
+
+                    return false
+                    // /* 添加热力的数据源 */
+                    // heat.addDataSource(this.createFakeData());
+                    // /* 将热力添加到地图的指定楼层上，添加后立刻显示 */
+                    // heat.addTo(map.getFloor(map.getLevel()));
+                    // setInterval(
+                    //     ()=> {
+                    //         var fakeData = this.createFakeData();
+                    //         /* 清除热力图上的所有数据源，注意，如果不清除数据源，则新的数据源会持续向原有数据源进行追加 */
+                    //         heat.clearDataSource();
+                    //         /* 向热力图追加数据源 */
+                    //         heat.addDataSource(fakeData);
+                    //         /* 追加数据源后，调用 update() 使其生效。该方法会使用较高资源对热力图进行重绘，请在适当时机调用，避免过于频繁的调用带来性能影响 */
+                    //         heat.update();
+                    //     }, 300
+                    // )
                     break;
                 case '能耗环境':
+                    map.mapScaleLevel= 18
                     G_PAUSE = true // 暂停旋转
                     map.moveTo({ x: 11583635.618584398, y: 3576562.1645018533, groupID:1, time:.5, callback:()=>{
                         
@@ -124,28 +136,38 @@ export default {
                     // }}); // 缩放
                     break;
                 case '停车场':
+                    this.camera = 1
+                    map.mapScaleLevel= 18
+                    G_PAUSE = false         /// 开启旋转
+                    map.moveTo({ x: 11583368.743554467, y: 3575993.484689622, groupID:3, time:.5, callback:()=>{}}); /// 定位
+                    break;
                 case '楼层管理':
-                    G_PAUSE = true // 暂停旋转
-                    map.moveTo({ x: 11583635.618584398, y: 3576562.1645018533, groupID:1, time:.5, callback:()=>{
+                    G_PAUSE = true                  // 暂停旋转
+                    map.mapScaleLevel= 22
+                    map.moveTo({ x: 11583336.912161592, y: 3576025.7743093525, groupID:2, time:.5, callback:()=>{
+                        map.rotateAngle = -90
                         
-                    map.scaleTo({duration:.5,scale:2000,update:()=>{
-                        map.rotateAngle = 16    // 旋转角度
-                        map.tiltAngle = 10      // 倾斜角度
-                    }}); // 缩放
                     }}); /// 定位
+                    
+                    
                     break;
                 case '电梯管理':
                     G_PAUSE = true // 暂停旋转
-                    map.moveTo({ x: 11583635.618584398, y: 3576562.1645018533, groupID:1, time:.5, callback:()=>{
-                        
-                    map.scaleTo({duration:.5,scale:2000,update:()=>{
-                        map.rotateAngle = 16    // 旋转角度
-                        map.tiltAngle = 10      // 倾斜角度
-                    }}); // 缩放
-                    }}); /// 定位
+                    map.mapScaleLevel= 18
+                     map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
                     break;
             }
             
+        },
+        /* 生成模拟数据的方法 */
+        createFakeData() {
+            var heatDataSource = [];
+            for (var index = 0; index < 10; index++) {
+                var heatPoint = getRandomCoords(map.getBound());
+                heatPoint.value = Math.random() * 100;
+                heatDataSource.push(heatPoint);
+            }
+            return heatDataSource;
         },
         updateLevel(typeid){
             let map = this.map
@@ -168,6 +190,7 @@ export default {
         },
         /// 加载地图
         openMap () {
+            console.log(1)
             let that = this
             const fmapID = '1386480942031998978';
             let map = new fengmap.FMMap({
@@ -187,7 +210,7 @@ export default {
                 //是否开启对数深度缓存来处理巨大的比例差异带来的闪面问题
                 logarithmicDepthBuffer: true,
                 defaultControlsPose: 180,//地图默认旋转角度
-                defaultTiltAngle: 90,	        //倾斜角，默认45度
+                defaultTiltAngle: 0,	        //倾斜角，默认45度
             })
             this.map = map
             
@@ -196,17 +219,16 @@ export default {
 
             //地图加载完成事件
             map.on('loadComplete', () => {
-                const pnt = { x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.1, callback:()=>{}};
-                map.moveTo(pnt);
-                this.updateLevel('200110');
+                //map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
+                //this.updateLevel('200110');
                 map.setBackground(require('./bg.jpg'))//加载背景图片
                 map.setBackgroundColor('#FFFFFF', 0.0);
-
                 
             });
 
             //外部模型加载完成事件
             map.on('gltfLoaded', () =>{
+                map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
                 this.addFlowLine(path); 
                 this.$emit('changeShowRight', true)
                 map.scaleTo({duration:2,scale:2000,callback:()=>{
@@ -224,13 +246,13 @@ export default {
                     }})
                 }}); // 缩放
 
-
+               
                 //map.getAutoRotateBymodelSpeed(50); // 自转速度
                 //map.setAutoRotateBymodel(true); // 开启自转
                 
             });
             //点击地图事件
-            map.on('mapClickNode', function (event) {
+            map.on('mapClickNode', (event)=> {
                 const target = event.target;
                 switch (event.nodeType) {
                 case fengmap.FMNodeType.FLOOR:
@@ -246,8 +268,33 @@ export default {
                 case fengmap.FMNodeType.FACILITY:
                     break;
                 }
+                if(event.target.name == '出入口'){
+                    bus.$emit('message', 'hello');
+                }
+
+                if(this.camera == 1){
+                    
+                    bus.$emit('camera', 'hello');
+                }
                 console.log(event)
+
+                return false
                 //alert("你点击了"+target.name);
+                 let marker = new fengmap.FMDynamicModel({
+                    url: './map/data/1386480942031998978/models/1004.glb',
+                    x: 12619607,
+                    y: 2621869,
+                    id: 4,
+                    callback: function() {
+                        console.log('模型加载完成。');
+                    }
+                });
+                console.log(marker,11111111)
+                // var level = map.getLevel()
+                // var floor = map.getFloor(level);
+                /* 将 Marker 添加到地图的指定楼层上 */
+                
+                marker.addTo(4);
             });
         },
         // 发光效果
@@ -297,12 +344,14 @@ export default {
             console.log(flowlength);
             var lineoption = {
                 center: map.center,
-                lineWidth: 4,
-                color: "#d39c31",//流光线的流光色
-                backgroundColor: "#20325b",//流光线的底色
+                lineWidth: 5,
+                // color: "#d39c31",//流光线的流光色
+                // backgroundColor: "#20325b",//流光线的底色
+                color: "#3799b3",//流光线的流光色
+                backgroundColor: "#14343f",//流光线的底色
                 opacity: 1.0,
                 lineLength: 100,
-                speed: 1
+                speed: 2
             }
             var flowLineLayer = map.getFMGroup(map.focusGroupID).getOrCreateLayer('flmMarker');
             for (var key in flowdata) {

@@ -3,7 +3,7 @@
     <div class="left animate__animated animate__bounceInLeft">
         <img class="img03-1" src="@/assets/icon/home/reekoRight03/img03-1.png">
     </div>
-  <div class="reekoRight animate__animated animate__bounceInRight">
+  <div class="reekoRight animate__animated animate__bounceInRight" v-show="oss">
     <div class="til">
       <img class="img04" src="@/assets/icon/home/reekoRight03/img04.png">
       <span>1楼东南侧</span>
@@ -14,27 +14,29 @@
     </div>
     <div class="list">
         <img @click="navClass(index)" :class="{ active : index == listIndex }" v-for="(list,index) in data" :key="index" class="vi" :src="list.img">
-        <!-- <video class="vi" src="../../assets/video/video02.mp4" autoplay loop controls="controls"></video>
-        <video class="vi" src="../../assets/video/video03.mp4" autoplay loop controls="controls"></video> -->
-        <!-- <video class="vi" src="../../assets/video/video04.mp4" autoplay loop controls="controls"></video>
-        <video class="vi" src="../../assets/video/video05.mp4" autoplay loop controls="controls"></video> -->
     </div>
   </div>
 </div>
 </template>
 
 <script>
+import bus from '@/utils/bus'
 export default {
   data () {
     return {
+      oss: false,
       status: true,
       listIndex: 0,
       data:[{img: require("@/assets/icon/home/reekoRight03/vi01.png")},{img: require("@/assets/icon/home/reekoRight03/vi02.png")}],
     }
   },
   mounted () {
+    bus.$on('message', (e) => {
+        this.oss = true
+    })
   },
   methods: {
+    
     navClass(index){
         this.listIndex = index
            
@@ -53,7 +55,7 @@ export default {
 }
 // 右部分
 .reekoRight{
-    position: absolute;top: 140px;right: 180px;z-index: 1;
+    position: absolute;top: 140px;right: 50px;z-index: 1;
     .til{
       display: flex;align-items: center;font-size: 20px; color: #ffffff; padding-bottom: 17px;
       .img04{width: 20px;height: 24px;margin-right: 12px;}

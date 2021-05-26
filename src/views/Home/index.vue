@@ -5,7 +5,7 @@
         <main-map 
         ref="mychild"
         :status="showRight" 
-        @changeShowRight="changeShowRight"  v-show="tab != 'ReekoRight02'"/>
+        @changeShowRight="changeShowRight" />
 
         <div  ref="s" v-show="showRight && tab != 'Building'" class="mainTitle animate__animated">{{mainTitle}}</div>
         
@@ -105,7 +105,7 @@ export default {
         if (this.websock) {
             this.websock.close(); // 关闭websocket连接
         }
-        //this.initWebSocket(); // 长链接
+        this.initWebSocket(); // 长链接
     }, 
     mounted(){
     },
@@ -195,8 +195,8 @@ export default {
                 alert("您的浏览器不支持WebSocket");
                 return false;
             }
-            const wsuri = 'ws://www.bos.com:9502' // websocket地址
-            //const wsuri = 'ws://demo.bos.nuomayun.com:9502' // websocket地址
+            //const wsuri = 'ws://www.bos.com:9502' // websocket地址
+            const wsuri = 'ws://demo.bos.nuomayun.com:9502' // websocket地址
             //const wsuri = 'ws://192.168.100.166:9502'
             
             this.websock = new WebSocket(wsuri);

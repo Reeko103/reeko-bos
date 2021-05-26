@@ -3,6 +3,13 @@
 </template>
 
 <script>
+// import  '../../../public/map/lib/dat.gui.min.js' //注意路径
+// import  '../../../public/map/lib/fengmap.core.min.js' //注意路径
+// import  '../../../public/map/lib/fengmap.control.min.js' //注意路径
+// import  '../../../public/map/lib/fengmap.render.min.js' //注意路径
+// import  '../../../public/map/lib/fengmap.analyzer.min.js' //注意路径
+// import  '../../../public/map/lib/fengmap.navi.min.js' //注意路径
+// import  '../../../public/map/js/path.js' //注意路径
 import * as echarts from 'echarts';
 export default {
     props: ['status'],

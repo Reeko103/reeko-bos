@@ -43,16 +43,16 @@ export default {
 <style lang="scss" scoped>
 .img01{position: absolute;top: 80px;left: 22px;z-index: 1;width: 409px;height: calc(100% - 100px);}
 .img02{position: absolute;top: 80px;right: 22px;z-index: 1;width: 409px;height: calc(100% - 100px);}
-.bottom{position: absolute;bottom: -290px;left: 446px;z-index: 1;width: 1034px;height: 290px;
+.bottom{position: absolute;bottom: -213px;left: 446px;z-index: 1;width: 1034px;height: 213px;
   .img03{width: 100%;height: 100%;}
   // 开关
   .switch{
-    position: absolute;bottom: 290px;left: calc(50% - 35.5px);z-index: 1;width: 71px;height: 26px;cursor: pointer;
+    position: absolute;bottom: 213px;left: calc(50% - 35.5px);z-index: 1;width: 71px;height: 26px;cursor: pointer;
   }
 }
 .enter{
   transition: bottom .5s;
-  bottom: -290px;
+  bottom: -213px;
 }
 .out{
   transition: bottom .5s;
