@@ -23,6 +23,17 @@ export function monitorRtmp(unicode) {
   })
 }
 
+//* 资产详情
+export function assetsInfo(unicode) {
+   return request({
+    url: `/assets/info`,
+    method: 'get',
+    params: {
+      unicode  /// 资产唯一标识
+    }
+  })
+}
+
 
 
 

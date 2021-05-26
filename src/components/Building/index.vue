@@ -217,29 +217,34 @@
   <div class="assetDetails animate__animated animate__bounceIn" v-if="assetDetailsStatus">
     <div class="top">
       <span>资产信息</span>
-      <img class="close" src="@/assets/icon/home/Building/img02.png">
+      <img @click="assetDetailsStatus = false" class="close" src="@/assets/icon/home/Building/img02.png">
     </div>
     <ul class="lists">
       <li>
-        <span>固定资产状态：</span><span>使用中</span>
+        <span>固定资产状态：</span>
+        <span v-if="assetDetailsData.status == 1">使用中</span>
+        <span v-else-if="assetDetailsData.status == 2">损坏</span>
+        <span v-else-if="assetDetailsData.status == 3">闲置</span>
+        <span v-else-if="assetDetailsData.status == 4">报废</span>
+        <span v-else-if="assetDetailsData.status == 5">遗失</span>
       </li>
       <li>
-        <span>资产名称：</span><span>DELL笔记本电脑</span>
+        <span>资产名称：</span><span>{{assetDetailsData.title}}</span>
       </li>
       <li>
-        <span>资产编号：</span><span>C2903824</span>
+        <span>资产编号：</span><span>{{assetDetailsData.number}}</span>
       </li>
       <li>
-        <span>资产型号：</span><span>E6540</span>
+        <span>资产型号：</span><span>{{assetDetailsData.model_number}}</span>
       </li>
       <li>
-        <span>启用日期：</span><span>2021-05-20</span>
+        <span>启用日期：</span><span>{{assetDetailsData.start_date}}</span>
       </li>
       <li>
-        <span>存放地点：</span><span>1F大厅前台</span>
+        <span>存放地点：</span><span>{{assetDetailsData.position}}</span>
       </li>
       <li>
-        <span>保管人：</span><span>王强</span>
+        <span>保管人：</span><span>{{assetDetailsData.custodian}}</span>
       </li>
     </ul>
   </div>
@@ -247,7 +252,7 @@
 </template>
 
 <script>
-import { wmjOpen,monitorRtmp } from '@/api/home' /// 接口 
+import { wmjOpen,monitorRtmp,assetsInfo } from '@/api/home' /// 接口 
 import countTo from 'vue-count-to'; /// 数字滚动
 import Liquidfill from '@/components/Liquidfill'    /// 水波球
 export default {
@@ -289,6 +294,7 @@ export default {
       seemhq: false,
       assetDetailsData: {}, /// 资产详情数据
       assetDetailsStatus: false, /// 资产详情状态
+      unicode: '', /// 资产设备标识
     }
   },
   mounted () {
@@ -303,6 +309,18 @@ export default {
       })
   },
   methods: {
+    sing(e){
+      console.log(this.unicode)
+      assetsInfo(this.unicode).then(res => {
+        if(res.data.status == 0){
+          this.assetDetailsData = res.data.data
+          this.assetDetailsStatus = true
+        }
+          console.log(res.data.data,111)
+      }).catch(error => {
+          console.log(error)
+      })
+    },
     /// 开启灯光
     getWmjOpen () {
       wmjOpen().then(res => {

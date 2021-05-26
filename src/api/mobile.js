@@ -12,3 +12,14 @@ export function warning(msg_type) {
     }
   })
 }
+
+//* ces
+export function cs(msg_type) {
+   return request({
+    url: `/common/receive`,
+    method: 'post',
+    data: {
+        msg_type
+    }
+  })
+}

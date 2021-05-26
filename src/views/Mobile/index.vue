@@ -21,6 +21,14 @@
                 <span>报警通知</span>
               </div>
             </li>
+             <!-- <li 
+            @click="sss()"
+            >
+              <div class="texts">
+                <p>ssssssss</p>
+                <span>报警通知</span>
+              </div>
+            </li> -->
           </ul>
       </div>
     </div>
@@ -28,7 +36,7 @@
 </template>
 
 <script>
-import { warning } from '@/api/mobile' 
+import { warning,cs } from '@/api/mobile' 
 import MainMap from '@/components/MainMap'    /// 主地图
 export default {
   components: { MainMap },
@@ -54,6 +62,20 @@ export default {
       },5000)
       
       warning(this.Data[index].name).then(res => {
+          console.log(res,111)
+          if(res.data.code == 1){
+          }else{
+              this.$toast('报警通知发送成功')
+          }
+      }).catch(error => {
+          console.log(error)
+      })
+    },
+    sss(){
+      cs({
+        "msg_type":"资产",
+        "unicode":"E28011700000020CC29FFB6B"
+    }).then(res => {
           console.log(res,111)
           if(res.data.code == 1){
           }else{

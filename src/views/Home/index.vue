@@ -223,7 +223,7 @@ export default {
         websocketonmessage(e) {
             // var vm = this;
             // let data1Json = JSON.parse(e.data);
-            console.log(e);
+            console.log(e.data.length,'长连接返回值');
             switch (e.data) {
                 case '高空抛物':
                     this.navClass (0);
@@ -245,6 +245,17 @@ export default {
                     this.navClass (8);
                     this.$nextTick(()=>{this.$refs.myCallThePolice.mhq = true})
                     break;
+            }
+            if(e.data.length > 20){
+                let Data = JSON.parse(e.data)
+                if(Data.msg_type == '资产'){
+                    this.navClass (8);
+                    this.$nextTick(()=>{
+                        this.$refs.myCallThePolice.unicode = Data.unicode
+                        this.$refs.myCallThePolice.sing();
+                    })
+                }
+                //myCallThePolice
             }
         },
         //连接建立失败重连
