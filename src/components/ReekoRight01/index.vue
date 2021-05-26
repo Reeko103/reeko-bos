@@ -60,7 +60,8 @@
   </ul>
   <div class="reekoRight animate__animated animate__bounceInRight" :class="inAndOut">
     <div class="content">
-      <img class="Title" src="@/assets/icon/home/reekoRightT01.png">
+      <img class="newImg" src="@/assets/icon/home/reekoRight01/img01.png">
+      <!-- <img class="Title" src="@/assets/icon/home/reekoRightT01.png">
       <div class="parkInformation">
         <p>园区名称：两江国际</p>
         <p>建成年份：2016年</p>
@@ -107,7 +108,6 @@
       <div id="visitor"></div>
       <img class="Title" src="@/assets/icon/home/reekoRightT03.png">
       <img class="reekoRightT06" src="@/assets/icon/home/reekoRightT06.png">
-      <!-- <img class="Title" src="@/assets/icon/home/reekoRightT04.png"> -->
       <ul class="listVideo">
         <li>
           <span>视频监控总量</span>
@@ -117,7 +117,7 @@
           <span>重点对象</span>
           <span class="num num02"><countTo :startVal='0' :endVal='1422' :duration='10000'></countTo></span>
         </li>
-      </ul>
+      </ul> -->
     </div>
     <!-- 开关 -->
     <img v-if="status" @click="switchC(1)" class="switch" src="@/assets/icon/home/Building/enter.png">
@@ -161,7 +161,7 @@ export default {
     }
   },
   mounted () {
-    this.inits("visitor") /// 初始化
+    //this.inits("visitor") /// 初始化
     /// 3秒后关闭右侧部分
     setTimeout(()=>{
       this.inAndOut = 'enter'
@@ -408,9 +408,7 @@ export default {
 
 <style lang="scss" scoped>
 // 综合总览
-.overview{position: absolute;top: 80px;left: 12px;z-index: 1; display: flex;flex-direction: column; align-items: center;
-justify-content: space-around;
-width: 210px; background:url("../../assets/icon/home/reekoRight01/leftBg.png") no-repeat;background-size: 100% 100%;
+.overview{position: absolute;top: 80px;left: 12px;z-index: 1; display: flex;flex-direction: column; align-items: center; justify-content: space-around; width: 210px; background:url("../../assets/icon/home/reekoRight01/leftBg.png") no-repeat;background-size: 100% 100%;
     height: 530px;
     li{color: #BEC0C3; font-size: 12px;
     width: 160px;
@@ -461,12 +459,9 @@ width: 210px; background:url("../../assets/icon/home/reekoRight01/leftBg.png") n
 
 // 右部分
 .reekoRight{
-    position: absolute;top: 80px;right: 12px;z-index: 1;width: 409px;height: calc(100% - 100px); background:url("../../assets/icon/home/reekoRightBg.png") no-repeat;color: #FFFFFF;background-size: 100% 100%;
-  .content{padding: 0 16px 20px;
-  height: calc(100% - 20px);
-  display: flex;
-flex-direction: column;
-justify-content: space-around;
+    position: absolute;top: 80px;right: 12px;z-index: 1;width: 409px;height: calc(100% - 100px);
+  .content{height: calc(100% - 20px); display: flex; flex-direction: column; justify-content: space-around;
+  .newImg{width: 100%;height: 100%;}
     .Title{width: 320px;height: 30px;margin: 10px 0 20px;}
     // 园区信息
     .parkInformation{padding: 0 16px;font-size: 12px;

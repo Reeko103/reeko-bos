@@ -58,6 +58,7 @@ export default {
         map: '',
         top:0,
         camera: 0,
+        visitorsFlowrate: 0,
     }
   },
   mounted(){
@@ -88,6 +89,7 @@ export default {
                     
                     break;
                 case '人流量':
+                    this.visitorsFlowrate = 1
                     G_PAUSE = true                  // 暂停旋转
                     map.mapScaleLevel= 22
                     map.moveTo({ x: 11583336.912161592, y: 3576025.7743093525, groupID:2, time:.5, callback:()=>{
@@ -116,17 +118,20 @@ export default {
                     // )
                     break;
                 case '能耗环境':
-                    map.mapScaleLevel= 18
+                    console.log(1)
                     G_PAUSE = true // 暂停旋转
-                    map.moveTo({ x: 11583635.618584398, y: 3576562.1645018533, groupID:1, time:.5, callback:()=>{
+                    map.mapScaleLevel= 18
+                    map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
+                    // map.moveTo({ x: 11583635.618584398, y: 3576562.1645018533, groupID:1, time:.5, callback:()=>{
                         
-                    // map.scaleTo({duration:.5,scale:1500,update:()=>{
-                    //     map.rotateAngle = 16    // 旋转角度
-                    //     map.tiltAngle = 10      // 倾斜角度
-                    // }}); // 缩放
-                    }}); /// 定位
+                    // // map.scaleTo({duration:.5,scale:1500,update:()=>{
+                    // //     map.rotateAngle = 16    // 旋转角度
+                    // //     map.tiltAngle = 10      // 倾斜角度
+                    // // }}); // 缩放
+                    // }}); /// 定位
                     break;
                 case '楼栋安全':
+                    map.mapScaleLevel= 18   
                     G_PAUSE = true                  // 暂停旋转
                     map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
                     // map.scaleTo({duration:.5,scale:1400,callback:()=>{
@@ -210,7 +215,9 @@ export default {
                 //是否开启对数深度缓存来处理巨大的比例差异带来的闪面问题
                 logarithmicDepthBuffer: true,
                 defaultControlsPose: 180,//地图默认旋转角度
-                defaultTiltAngle: 0,	        //倾斜角，默认45度
+                defaultTiltAngle: 10,	        //倾斜角，默认45度
+                defaultMinTiltAngle: 10,		//最小倾斜角
+                defaultMaxTiltAngle: 60,		//最大倾斜角
             })
             this.map = map
             
@@ -228,10 +235,10 @@ export default {
 
             //外部模型加载完成事件
             map.on('gltfLoaded', () =>{
-                map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
+                map.moveTo({ x: 11583388.641292814, y: 3575943.7371395347, groupID:1, time:.5, callback:()=>{ }});
                 this.addFlowLine(path); 
                 this.$emit('changeShowRight', true)
-                map.scaleTo({duration:2,scale:2000,callback:()=>{
+                map.scaleTo({duration:2,scale:1600,callback:()=>{
                     map.tiltTo({to:10,duration:1, callback:()=>{
                         window.setInterval(()=>{
                             //console.log(G_PAUSE,G_IS_ROTATE)
@@ -245,7 +252,8 @@ export default {
                         },100)
                     }})
                 }}); // 缩放
-
+                
+                
                
                 //map.getAutoRotateBymodelSpeed(50); // 自转速度
                 //map.setAutoRotateBymodel(true); // 开启自转
@@ -275,6 +283,10 @@ export default {
                 if(this.camera == 1){
                     
                     bus.$emit('camera', 'hello');
+                }
+
+                if(this.visitorsFlowrate == 1){
+                    bus.$emit('visitorsFlowrate', 'hello');
                 }
                 console.log(event)
 
@@ -344,12 +356,12 @@ export default {
             console.log(flowlength);
             var lineoption = {
                 center: map.center,
-                lineWidth: 5,
+                lineWidth: 10,
                 // color: "#d39c31",//流光线的流光色
                 // backgroundColor: "#20325b",//流光线的底色
                 color: "#3799b3",//流光线的流光色
                 backgroundColor: "#14343f",//流光线的底色
-                opacity: 1.0,
+                opacity: .5,
                 lineLength: 100,
                 speed: 2
             }

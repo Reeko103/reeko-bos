@@ -1,25 +1,11 @@
 <template>
 <div>
-    <img class="img05 animate__animated animate__bounceInLeft" src="@/assets/icon/home/ElevatorManagement/img05.png">
-    <ul class="reekoRight animate__animated animate__bounceInRight">
-        <li>
-            <img class="img01" src="@/assets/icon/home/ElevatorManagement/img01.png">
-            <video class="video06" src="../../assets/video/video06.mp4" autoplay loop controls="controls"></video>
-            <div class="bottom">
-                <img class="lef" src="@/assets/icon/home/ElevatorManagement/img01-1.png">
-                <img src="@/assets/icon/home/ElevatorManagement/img01-2.png">
-            </div>
-        </li>
-        <li>
-            <img class="img02" src="@/assets/icon/home/ElevatorManagement/img02.png">
-        </li>
-        <li>
-            <img class="img03" src="@/assets/icon/home/ElevatorManagement/img03.png">
-        </li>
-        <li>
-            <img class="img04" src="@/assets/icon/home/ElevatorManagement/img04.png">
-        </li>
-    </ul>
+    <img @click="elevator = true" class="img01 animate__animated animate__bounceIn" src="@/assets/icon/home/ElevatorManagement/img01.png">
+    
+    <div class="effect animate__animated animate__bounceIn" v-show="elevator" >
+        <video class="vi" src="../../assets/video/video07.mp4" autoplay loop controls="controls"></video>
+        <div class="tip" @click="elevator = false"></div>
+    </div>
 </div>
 </template>
 
@@ -27,48 +13,23 @@
 export default {
   data () {
     return {
+        elevator: false,
     }
   },
   mounted () {
   },
   methods: {
-    
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.img05{position: absolute;top: 121px;left: 16px;z-index: 1;width: 525px;height: 488px;}
-// 右部分
-.reekoRight{
-    position: absolute;top: 80px;right: 12px;z-index: 1;height: calc(100% - 100px);width: 1060px;
-    height: 854px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-content: space-between;
-    img{width: 525px;height: 392px;}
-    .img01{height: 448px;}
-    .img02{height: 436px;}
-    li{
-        position: relative;
-        .video06{position: absolute;top: 65px;
-            left: 20px;
-            z-index: 1;
-            width: 480px;
-            height: 300px;object-fit:fill;}
-        .bottom{
-            position: absolute;
-            bottom: 20px;
-            left: 0;
-            z-index: 1;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            img{width: 149px;height: 50px;cursor: pointer;}
-            .lef{margin-right: 24px;}
-        }
-    }
+.effect{
+    padding: 82px 22px 25px;
+position: absolute;top: 350px;right: 306px;z-index: 1;background:url("../../assets/icon/home/ElevatorManagement/img02Bg.png") no-repeat;color: #FFFFFF;background-size: 100% 100%;
+    .tip{width: 50px;height: 60px;position: absolute;top: 0px;right: 0;z-index: 1;cursor: pointer;}
+    .vi{width: 658px;height: 408px;object-fit:fill;}
 }
+
+.img01{position: absolute;top: 140px;left: calc(50% - 924px);z-index: 1;width: 1848px;height: 638px;cursor: pointer;}
 </style>

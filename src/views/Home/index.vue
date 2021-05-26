@@ -7,7 +7,7 @@
         :status="showRight" 
         @changeShowRight="changeShowRight" />
 
-        <div  ref="s" v-show="showRight && tab != 'Building'" class="mainTitle animate__animated">{{mainTitle}}</div>
+        <!-- <div  ref="s" v-show="showRight && tab != 'Building'" class="mainTitle animate__animated">{{mainTitle}}</div> -->
         
 
         <!-- 顶部头部 -->
@@ -113,17 +113,17 @@ export default {
         changeShowRight(status){
             this.showRight = true
         },
-        mainTitles(){
-            this.$refs.s.classList.add('animate__fadeIn');
-            setTimeout(()=>{
-                this.$refs.s.classList.remove('animate__fadeIn');
-            }, 800);
-        },
+        // mainTitles(){
+        //     this.$refs.s.classList.add('animate__fadeIn');
+        //     setTimeout(()=>{
+        //         this.$refs.s.classList.remove('animate__fadeIn');
+        //     }, 800);
+        // },
         /// 头部导航切换
         navClass (index) {
             this.headerNavIndex = index
             this.mainTitle = this.headerNav[index].name
-            this.mainTitles()
+            //this.mainTitles()
             switch(index){
                 case 0:
                     this.tab = 'ReekoRight01'
@@ -139,8 +139,7 @@ export default {
                     break;
                 case 3:
                     this.tab = 'ReekoRight02'
-                    //this.$refs.mychild.switchFloors('能耗环境')
-                    this.s = 'MapOne'
+                    this.$refs.mychild.switchFloors('能耗环境')
                     break;
                 case 4:
                     this.tab = 'ReekoRight03'

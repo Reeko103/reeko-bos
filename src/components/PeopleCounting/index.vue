@@ -1,14 +1,14 @@
 <template>
 <div>
-  <div class="effect">
+  <div class="effect" v-if="visitorsFlowrate">
     <div class="top">
       <div class="left">
-          <img class="img03-1" src="@/assets/icon/home/PeopleCounting/img03-1.png">
+          <img class="img03T" src="@/assets/icon/home/PeopleCounting/img03-1.png">
           <span>人群聚集</span>
       </div>
-      <img class="img03-2" src="@/assets/icon/home/PeopleCounting/img03-2.png">
+      <img @click="visitorsFlowrate = false" class="img03X" src="@/assets/icon/home/PeopleCounting/img03-2.png">
     </div>
-    <video class="vi" src="../../assets/video/video02.mp4" autoplay loop controls="controls"></video>
+    <video class="vi" src="../../assets/video/video07.mp4" autoplay loop controls="controls"></video>
   </div>
 
   <!-- 楼层 -->
@@ -33,14 +33,19 @@
 </template>
 
 <script>
+import bus from '@/utils/bus'
 export default {
   data () {
     return {
+      visitorsFlowrate: false,
       layerNumI: 1,  //* 楼层索引
       layerNumD: ['B1','F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11'], //* 楼层数据
     }
   },
   mounted () {
+    bus.$on('visitorsFlowrate', (e) => {
+        this.visitorsFlowrate = true
+    })
   },
   methods: {
     layerNumClass(index){
@@ -52,14 +57,13 @@ export default {
 
 <style lang="scss" scoped>
 .effect{width: 426px;position: absolute;top: 100px;left: 100px ;z-index: 1;
-  .top{display: flex;align-items: center;
-  justify-content: space-between;
-    border-bottom: 2px solid #FFCB2C;
+  .top{display: flex;align-items: center; justify-content: space-between; border-bottom: 2px solid #FFCB2C;
+    padding-bottom: 12px;
     .left{color: #ffffff;display: flex;align-items: center;}
-    .img03-1{width: 27px;height: 23px;}
-    .img03-1{width: 19px;height: 20px;}
+    .img03T{width: 27px;height: 23px;margin-right: 10px;}
+    .img03X{width: 19px;height: 20px;cursor: pointer;}
   }
-  .vi{width: 100%;height: 284px;}
+  .vi{width: 100%;height: 284px;object-fit:fill;}
 }
 .img06{width: 73px;height: 309px;position: absolute;top: 130px;right: 450px;z-index: 1;}
 // 楼层
