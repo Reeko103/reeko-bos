@@ -4,7 +4,7 @@ const pxtorem = require('postcss-pxtorem'); //rem适配
 module.exports = {
     devServer: {
       port: 8002, // 端口号，如果端口号被占用，会自动提升1
-      host: "192.168.100.5", //主机名， 127.0.0.1， 真机 0.0.0.0
+      host: "0.0.0.0", //主机名， 127.0.0.1， 真机 0.0.0.0
       https: false, //协议
       open: true, //启动服务时自动打开浏览器访问
     },

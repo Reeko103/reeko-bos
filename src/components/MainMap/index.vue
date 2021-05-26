@@ -80,13 +80,11 @@ export default {
                 case '综合总览':
                 case '指挥中心':
                     G_PAUSE = false         /// 开启旋转
-                    map.mapScaleLevel= 18
+                    //map.mapScaleLevel= 18
                     map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
-                    map.scaleTo({duration:.5,scale:2000,callback:()=>{
-                        map.tiltAngle = 10      /// 倾斜角度
+                    map.scaleTo({duration:2,scale:1000,callback:()=>{
+                        map.groupSpace = -50;
                     }}); // 缩放
-                    
-                    
                     break;
                 case '人流量':
                     this.visitorsFlowrate = 1
@@ -216,8 +214,8 @@ export default {
                 logarithmicDepthBuffer: true,
                 defaultControlsPose: 180,//地图默认旋转角度
                 defaultTiltAngle: 10,	        //倾斜角，默认45度
-                defaultMinTiltAngle: 10,		//最小倾斜角
-                defaultMaxTiltAngle: 60,		//最大倾斜角
+                // defaultMinTiltAngle: 10,		//最小倾斜角
+                // defaultMaxTiltAngle: 60,		//最大倾斜角
             })
             this.map = map
             
@@ -226,7 +224,7 @@ export default {
 
             //地图加载完成事件
             map.on('loadComplete', () => {
-                //map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
+                map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
                 //this.updateLevel('200110');
                 map.setBackground(require('./bg.jpg'))//加载背景图片
                 map.setBackgroundColor('#FFFFFF', 0.0);
@@ -235,28 +233,25 @@ export default {
 
             //外部模型加载完成事件
             map.on('gltfLoaded', () =>{
-                map.moveTo({ x: 11583388.641292814, y: 3575943.7371395347, groupID:1, time:.5, callback:()=>{ }});
+                //map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
                 this.addFlowLine(path); 
                 this.$emit('changeShowRight', true)
-                map.scaleTo({duration:2,scale:1600,callback:()=>{
-                    map.tiltTo({to:10,duration:1, callback:()=>{
-                        window.setInterval(()=>{
-                            //console.log(G_PAUSE,G_IS_ROTATE)
-                            if(G_PAUSE || G_IS_ROTATE) return;
-                            if(G_NOW_ROTATE === 360) G_NOW_ROTATE = 0;
-                            G_IS_ROTATE = true
-                            map.rotateTo({to:G_NOW_ROTATE,duration:1,callback:()=>{
-                                G_NOW_ROTATE += 5
-                                G_IS_ROTATE = false
-                            }})
-                        },100)
-                    }})
+                map.scaleTo({duration:2,scale:1000,callback:()=>{
+                    window.setInterval(()=>{
+                        //console.log(G_PAUSE,G_IS_ROTATE)
+                        if(G_PAUSE || G_IS_ROTATE) return;
+                        if(G_NOW_ROTATE === 360) G_NOW_ROTATE = 0;
+                        G_IS_ROTATE = true
+                        map.rotateTo({to:G_NOW_ROTATE,duration:1,callback:()=>{
+                            G_NOW_ROTATE += 5
+                            G_IS_ROTATE = false
+                        }})
+                    },100)
                 }}); // 缩放
-                
-                
-               
-                //map.getAutoRotateBymodelSpeed(50); // 自转速度
+                map.groupSpace = -50;
                 //map.setAutoRotateBymodel(true); // 开启自转
+                //map.getAutoRotateBymodelSpeed(50); // 自转速度
+                
                 
             });
             //点击地图事件
