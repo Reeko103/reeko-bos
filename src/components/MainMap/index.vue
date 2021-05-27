@@ -80,16 +80,16 @@ export default {
             switch (value) {
                 case '综合总览':
                 case '指挥中心':
-                    console.log('指挥中心')
                     G_PAUSE = false /// 开启旋转
+                    G_IS_ROTATE = G_PAUSE = false
                     map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{
                         map.mapScaleLevel= 19
                     }});
                     map.groupSpace = -100;
                     break;
                 case '能耗环境':
-                    console.log('能耗环境')
                     G_PAUSE = true // 暂停旋转
+                    G_IS_ROTATE = false
                     map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{
                         map.mapScaleLevel= 19;
                         map.rotateTo({to: 0,duration:.5,callback:()=>{}})
@@ -98,6 +98,7 @@ export default {
                     break;
                 case '疫情防控': 
                     G_PAUSE = true                  // 暂停旋转
+                    G_IS_ROTATE = false
                     map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{
                         map.mapScaleLevel= 19;
                         map.rotateTo({to: 120,duration:.5,callback:()=>{}})
@@ -106,20 +107,28 @@ export default {
                     break;
                 case '楼栋安全':   
                     G_PAUSE = true                  // 暂停旋转
+                    G_IS_ROTATE = false
                     map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{
-                         map.mapScaleLevel= 19;
+                        map.mapScaleLevel= 19;
                         map.rotateTo({to: 160,duration:.5,callback:()=>{}})
                     }});
                     map.groupSpace = -100;
                     break;
                 case '停车场':
-                    this.camera = 1
-                    map.moveTo({ x: 11583368.743554467, y: 3575993.484689622, groupID:3, time:.5, callback:()=>{}}); /// 定位
                     G_PAUSE = false         /// 开启旋转
+                    G_IS_ROTATE = G_PAUSE = false
+                    map.mapScaleLevel= 19;
+                    this.camera = 1
+                    map.moveTo({ x: 11583368.743554467, y: 3575993.484689622, groupID:3, time:.5, callback:()=>{
+                        
+                    }}); /// 定位
+                    
                     break;
                 case '电梯管理':
                     G_PAUSE = true                  // 暂停旋转
+                    G_IS_ROTATE = false
                     map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{
+                        map.mapScaleLevel= 19;
                         map.rotateTo({to: 0,duration:.5,callback:()=>{}})
                     }});
                     map.groupSpace = -100;
@@ -127,6 +136,7 @@ export default {
                 case '人流量':
                     this.visitorsFlowrate = 1
                     G_PAUSE = true                  // 暂停旋转
+                    G_IS_ROTATE = false
                     map.mapScaleLevel= 22
                     map.moveTo({ x: 11583336.912161592, y: 3576025.7743093525, groupID:2, time:.5, callback:()=>{
                         map.rotateAngle = -90
@@ -134,6 +144,7 @@ export default {
                     break;
                 case '楼层管理':
                     G_PAUSE = true                  // 暂停旋转
+                    G_IS_ROTATE = false
                     map.mapScaleLevel= 22
                     map.moveTo({ x: 11583336.912161592, y: 3576025.7743093525, groupID:2, time:.5, callback:()=>{
                         map.rotateAngle = -90
@@ -220,12 +231,13 @@ export default {
                 map.scaleTo({duration:2,scale:1000,callback:()=>{
                     window.setInterval(()=>{
                         if(G_PAUSE || G_IS_ROTATE) return;
-                        if(G_NOW_ROTATE === 360) G_NOW_ROTATE = 0;
+                        if(G_NOW_ROTATE == 360) G_NOW_ROTATE = 0;
                         G_IS_ROTATE = true
                         map.rotateTo({to:G_NOW_ROTATE,duration:1,callback:()=>{
                             G_NOW_ROTATE += 5
+                            console.log(G_NOW_ROTATE,9)
                             G_IS_ROTATE = false
-                            }})
+                        }})
                         // if(G_PAUSE) return;
                         // G_NOW_ROTATE === 360 ? G_NOW_ROTATE = 0 : console.log('还没到360');
                         // map.rotateTo({to:G_NOW_ROTATE,duration:1,callback:()=>{
