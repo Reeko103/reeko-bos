@@ -3,7 +3,7 @@ import router from '@/router'
 // 手动创建一个 axios 对象, 参考: https://github.com/axios/axios#creating-an-instance 
 
 //let url = 'http://192.168.100.166' // 本地
-// let url = 'http://www.bos.com' // 本地
+//let url = 'http://www.bos.com' // 本地
 let url = 'http://demo.bos.nuomayun.com' // 测试
 
 const request = axios.create({  

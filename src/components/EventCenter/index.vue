@@ -17,6 +17,16 @@
   <div v-if="seeGkpw" @click="seeGkpw = false" class="seeDangerousEvents animate__animated animate__zoomIn">
     <video autoplay class="vi" src="../../assets/video/gkpw.mp4" loop controls="controls"></video>
   </div>
+  <!-- 危险人物事件 -->
+  <div v-if="wxrw" class="dangerousEvents animate__animated animate__zoomIn">
+    <p class="tips">危险人物报警！！</p>
+  </div>
+  <!-- 查看 -->
+  <div v-if="seewxrw" @click="seewxrw = false" class="seeDangerousEvents animate__animated animate__zoomIn">
+    <!-- <video autoplay class="vi" src="../../assets/video/wxrw.mp4" loop controls="controls"></video> -->
+    <img class="wxrw01" src="@/assets/icon/home/wxrw01.png">
+    <img class="wxrw02" src="@/assets/icon/home/wxrw02.gif">
+  </div>
   <video hidden controls="controls" :src="wav" ref="audio"></video>
 </div>
 </template>
@@ -33,6 +43,8 @@ export default {
       wav: require("@/assets/voice/13166.wav"),
       gkpw: false,
       seeGkpw: false,
+      wxrw: false,
+      seewxrw: false,
       // 高空抛物事件
     }
   },
@@ -48,9 +60,28 @@ export default {
         setTimeout(()=>{
           this.seeGkpw = true
           this.gkpw = false 
+          
           bus.$emit('transmit', true)
           setTimeout(()=>{
             this.seeGkpw = false
+          },60000)
+        },3000)
+      })
+    },
+    /// 危险人物
+    transmitWxrw(){  
+      this.wxrw = true
+      this.seewxrw = false
+      this.$nextTick(()=>{
+        this.$refs.audio.currentTime = 0; //从头开始播放
+        this.$refs.audio.play(); //播放
+        setTimeout(()=>{
+          this.seewxrw = true
+          this.wxrw = false 
+          
+          bus.$emit('transmit', true)
+          setTimeout(()=>{
+            this.seewxrw = false
           },15000)
         },3000)
       })
@@ -76,8 +107,13 @@ export default {
 .dangerousEvents{position: absolute;top: calc(50% - 105.5px);left: calc(50% - 156.5px);z-index: 1;width: 313px;height: 211px; background:url("../../assets/icon/home/callThePoliceBg.png") no-repeat;background-size: 100% 100%;
   .tips{padding: 123px 0 0 67px;font-size: 20px;color: #FFEF3E;}
 }
-.seeDangerousEvents{position: absolute;top: calc(50% - 200px);right: 430px;z-index: 1;width: 500px;height: 400px;
+.seeDangerousEvents{position: absolute;top: calc(50% - 150px);right: calc(50%);z-index: 1;width: 500px;height: 400px;
+display: flex;
+align-items: center;
+cursor: pointer;
   .vi{width: 100%;height: 100%;object-fit:fill;}
+  .wxrw01{width: 532px;height: 322px;}
+  .wxrw02{width: 300px;height: 200px;}
 }
 
 .img01{position: absolute;top: 80px;left: 22px;z-index: 1;width: 409px;height: 981px;}

@@ -481,6 +481,7 @@ export default {
                 break;
             default:
                 this.navIndex = -1;
+                this.$toast('正在接入中...')
         }
            
       }

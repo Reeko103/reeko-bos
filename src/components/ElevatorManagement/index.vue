@@ -51,7 +51,7 @@ export default {
             bus.$emit('transmit', true)
             setTimeout(()=>{
             this.seeDtqy = false
-          },15000)
+          },60000)
             },3000)
         })
         },

@@ -78,7 +78,7 @@ export default {
           bus.$emit('transmit', true)
           setTimeout(()=>{
             this.seeRqjj = false
-          },15000)
+          },60000)
         },3000)
       })
     },

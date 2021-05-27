@@ -248,6 +248,12 @@ export default {
                         this.$refs.myCallThePolice.transmitOne();
                     })
                     break;
+                case '危险人物':
+                    this.navClass (2);
+                    this.$nextTick(()=>{
+                        this.$refs.myCallThePolice.transmitWxrw();
+                    })
+                    break;
                 case '人群聚集':
                     this.navClass (7);
                     this.$nextTick(()=>{
@@ -271,10 +277,6 @@ export default {
                     this.$nextTick(()=>{
                         this.$refs.myCallThePolice.transmitZcyz();
                     })
-                    break;
-                case '危险人物':
-                    // this.navClass (8);
-                    // this.$nextTick(()=>{this.$refs.myCallThePolice.wxrw = true})
                     break;
                 case '灭火器移走':
                     this.navClass (8);
