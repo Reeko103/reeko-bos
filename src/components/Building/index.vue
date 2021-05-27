@@ -142,21 +142,31 @@
   </div>
 
   <!-- 灯光事件 -->
-  <div v-if="dgwg" class="dangerousEvents animate__animated animate__rubberBand">
-    <span class="close" @click="dgwg = false">×</span>
-    <div class="cont">
-      <div class="top">
-        <img class="callThePolice01" src="@/assets/icon/home/callThePolice01.png">
-        <span><span class="large">警告</span> 待处理</span>
-      </div>
-      <p class="tips">灯光未关报警！！</p>
-    </div>
-    <button ref="s" @click="seedgwg = true" class="see animate__animated">点击查看</button>
+  <div v-if="dgwg" class="dangerousEvents animate__animated animate__zoomIn">
+    <p class="tips">灯光未关报警！！</p>
+  </div>
+  <!-- 查看 -->
+  <div v-if="seeDgwg" @click="seeDgwg = false" class="seeDangerousEvents animate__animated animate__zoomIn">
+    <img class="vi" src="../../assets/icon/home/dgwg.png">
+  </div>
+  <video hidden controls="controls" :src="wav" ref="audio"></video>
+
+  <!-- 灭火器事件 -->
+  <div v-if="mhq" class="dangerousEvents animate__animated animate__zoomIn">
+    <p class="tips">灭火器移走报警！！</p>
+  </div>
+  <!-- 查看 -->
+  <div v-if="seemhq" @click="seemhq = false" class="seeDangerousEvents animate__animated animate__zoomIn">
+    <img class="vi" src="../../assets/icon/home/mhq.jpg">
   </div>
 
+  <!-- 资产移走事件 -->
+  <div v-if="zcyz" class="dangerousEvents animate__animated animate__zoomIn">
+    <p class="tips">资产移走报警！！</p>
+  </div>
   <!-- 查看 -->
-  <div v-if="seedgwg && dgwg" @click="seedgwg = false" class="seeDangerousEvents animate__animated animate__rubberBand">
-    <video class="vi" src="../../assets/video/video02.mp4" autoplay loop controls="controls"></video>
+  <div v-if="seezcyz" @click="seezcyz = false" class="seeDangerousEvents animate__animated animate__zoomIn">
+    <img class="vi zcyz" src="../../assets/icon/home/zcyz.png">
   </div>
 
   <!-- 危险人物事件 -->
@@ -174,42 +184,6 @@
 
   <!-- 查看 -->
   <div v-if="seewxrw && wxrw" @click="seewxrw = false" class="seeDangerousEvents seewxrw  animate__animated animate__rubberBand">
-    <video class="vi" src="../../assets/video/video02.mp4" autoplay loop controls="controls"></video>
-  </div>
-
-  <!-- 资产移走事件 -->
-  <div v-if="zcyz" class="dangerousEvents zcyz animate__animated animate__rubberBand">
-    <span class="close" @click="zcyz = false">×</span>
-    <div class="cont">
-      <div class="top">
-        <img class="callThePolice01" src="@/assets/icon/home/callThePolice01.png">
-        <span><span class="large">警告</span> 待处理</span>
-      </div>
-      <p class="tips">资产移走报警！！</p>
-    </div>
-    <button ref="s" @click="seezcyz = true" class="see animate__animated">点击查看</button>
-  </div>
-
-  <!-- 查看 -->
-  <div v-if="seezcyz && zcyz" @click="seezcyz = false" class="seeDangerousEvents seezcyz  animate__animated animate__rubberBand">
-    <video class="vi" src="../../assets/video/video02.mp4" autoplay loop controls="controls"></video>
-  </div>
-
-  <!-- 灭火器事件 -->
-  <div v-if="mhq" class="dangerousEvents mhq animate__animated animate__rubberBand">
-    <span class="close" @click="mhq = false">×</span>
-    <div class="cont">
-      <div class="top">
-        <img class="callThePolice01" src="@/assets/icon/home/callThePolice01.png">
-        <span><span class="large">警告</span> 待处理</span>
-      </div>
-      <p class="tips">灭火器移走报警！！</p>
-    </div>
-    <button ref="s" @click="seemhq = true" class="see animate__animated">点击查看</button>
-  </div>
-
-  <!-- 查看 -->
-  <div v-if="seemhq && mhq" @click="seemhq = false" class="seeDangerousEvents seemhq  animate__animated animate__rubberBand">
     <video class="vi" src="../../assets/video/video02.mp4" autoplay loop controls="controls"></video>
   </div>
 
@@ -252,6 +226,7 @@
 </template>
 
 <script>
+import bus from '@/utils/bus'
 import { wmjOpen,monitorRtmp,assetsInfo } from '@/api/home' /// 接口 
 import countTo from 'vue-count-to'; /// 数字滚动
 import Liquidfill from '@/components/Liquidfill'    /// 水波球
@@ -284,8 +259,9 @@ export default {
       airConditionerGroup: [],
       airConditionerData: [{name: '501'},{name: '502'},{name: '503'},{name: '504'},{name: '505'}],
 
+      wav: require("@/assets/voice/13166.wav"),
       dgwg: false,
-      seedgwg: false,
+      seeDgwg: false,
       wxrw: false,
       seewxrw: false,
       zcyz: false,
@@ -309,6 +285,78 @@ export default {
       })
   },
   methods: {
+    /// 灯光未关-报警
+    transmitDgwg(){  
+      ///
+      this.mhq = false
+      this.seemhq = false
+      this.zcyz = false
+      this.seezcyz = false
+      ///
+      this.dgwg = true
+      this.seeDgwg = false
+      
+      this.$nextTick(()=>{
+        this.$refs.audio.currentTime = 0; //从头开始播放
+        this.$refs.audio.play(); //播放
+        setTimeout(()=>{
+          this.seeDgwg = true
+          this.dgwg = false 
+          bus.$emit('transmit', true)
+          setTimeout(()=>{
+            this.seeDgwg = false
+          },15000)
+        },3000)
+      })
+    },
+    /// 灭火器移走-报警
+    transmitMhq(){ 
+      ///
+      this.dgwg = false
+      this.seeDgwg = false
+      this.zcyz = false
+      this.seezcyz = false
+      /// 
+      this.mhq = true
+      this.seemhq = false
+      
+      this.$nextTick(()=>{
+        this.$refs.audio.currentTime = 0; //从头开始播放
+        this.$refs.audio.play(); //播放
+        setTimeout(()=>{
+          this.seemhq = true
+          this.mhq = false 
+          bus.$emit('transmit', true)
+          setTimeout(()=>{
+            this.seemhq = false
+          },15000)
+        },3000)
+      })
+    },
+    /// 资产移走-报警
+    transmitZcyz(){ 
+      ///
+      this.dgwg = false
+      this.seeDgwg = false
+      this.mhq = false
+      this.seemhq = false
+      /// 
+      this.zcyz = true
+      this.seezcyz = false
+      
+      this.$nextTick(()=>{
+        this.$refs.audio.currentTime = 0; //从头开始播放
+        this.$refs.audio.play(); //播放
+        setTimeout(()=>{
+          this.seezcyz = true
+          this.zcyz = false 
+          bus.$emit('transmit', true)
+          setTimeout(()=>{
+            this.seezcyz = false
+          },15000)
+        },3000)
+      })
+    },
     sing(e){
       console.log(this.unicode)
       assetsInfo(this.unicode).then(res => {
@@ -453,35 +501,20 @@ export default {
   }
 }
 // 报警
-.dangerousEvents{position: absolute;top: 272px;right: 450px;z-index: 1;width: 278px;height: 192px; background:url("../../assets/icon/home/callThePoliceBg.png") no-repeat;background-size: 100% 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  .close{position: absolute;right: 13px;top: 0;z-index: 1;color: #E12832;font-size: 30px;cursor: pointer;}
-  .cont{
-    padding-top: 40px;
-    .top{
-      display: flex;
-      align-items: flex-end;
-      color: #D9292E;
-      font-size: 18px;
-      padding-bottom: 10px;
-      .callThePolice01{width: 43px;height: 40px;margin-right: 12px;}
-      .large{font-size: 26px;}
-    }
-    .tips{padding: 10px 0 20px;font-size: 16px;color: #ffffff;border-top: 2px solid #ffffff;}
-  }
-  .see{width: 90px;height: 32px;background: rgba(255, 17, 17, .28);border-radius: 2px;color: #FD4D5F;border: none;cursor: pointer;}
+.dangerousEvents{position: absolute;top: calc(50% - 105.5px);left: calc(50% - 156.5px);z-index: 1;width: 313px;height: 211px; background:url("../../assets/icon/home/callThePoliceBg.png") no-repeat;background-size: 100% 100%;
+  .tips{padding: 123px 0 0 67px;font-size: 20px;color: #FFEF3E;}
 }
-.seeDangerousEvents{position: absolute;top: 272px;right: 750px;z-index: 1;width: 278px;height: 192px;
+.seeDangerousEvents{position: absolute;top: calc(50% - 200px);right: 430px;z-index: 1;width: 500px;height: 400px;
   .vi{width: 100%;height: 100%;object-fit:fill;}
+  .zcyz{width: 315px;height: 378px;}
+  img{cursor: pointer;}
 }
-.wxrw{top: 80px;}
-.seewxrw{top: 80px;}
-.zcyz{top: 464px;}
-.seezcyz{top: 464px;}
-.mhq{top: 656px;}
-.seemhq{top: 656px;}
+// .wxrw{top: 80px;}
+// .seewxrw{top: 80px;}
+// .zcyz{top: 464px;}
+// .seezcyz{top: 464px;}
+// .mhq{top: 656px;}
+// .seemhq{top: 656px;}
 // 导航
 .nav{position: absolute;top: 164px;left: 46px;z-index: 1;width: 70px;height: 420px; color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: space-around; background:url("../../assets/icon/home/Operation/img01Bg.png") no-repeat;background-size: 100% 100%; font-size: 10px;
     li{display: flex;flex-direction: column;align-items: center;justify-content: center;

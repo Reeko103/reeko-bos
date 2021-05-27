@@ -63,6 +63,16 @@ export default {
   },
   mounted(){
     this.openMap() /// 加载地图
+
+    bus.$on('transmit', (e) => {
+        let map = this.map
+        if(e){
+            G_PAUSE = true // 暂停旋转
+            G_IS_ROTATE = false
+            map.rotateTo({to: 60,duration:.5,callback:()=>{}})
+            map.groupSpace = 0;
+        }
+    })
   },
   methods: {
         // 转动控制
@@ -135,19 +145,19 @@ export default {
                     break;
                 case '人流量':
                     this.visitorsFlowrate = 1
-                    G_PAUSE = true                  // 暂停旋转
-                    G_IS_ROTATE = false
+                    G_PAUSE = false         /// 开启旋转
+                    G_IS_ROTATE = G_PAUSE = false
                     map.mapScaleLevel= 22
                     map.moveTo({ x: 11583336.912161592, y: 3576025.7743093525, groupID:2, time:.5, callback:()=>{
-                        map.rotateAngle = -90
+                        //map.rotateAngle = -90
                     }}); /// 定位
                     break;
                 case '楼层管理':
-                    G_PAUSE = true                  // 暂停旋转
-                    G_IS_ROTATE = false
+                    G_PAUSE = false         /// 开启旋转
+                    G_IS_ROTATE = G_PAUSE = false
                     map.mapScaleLevel= 22
                     map.moveTo({ x: 11583336.912161592, y: 3576025.7743093525, groupID:2, time:.5, callback:()=>{
-                        map.rotateAngle = -90
+                        //map.rotateAngle = -90
                         
                     }}); /// 定位
                     break;
@@ -235,15 +245,9 @@ export default {
                         G_IS_ROTATE = true
                         map.rotateTo({to:G_NOW_ROTATE,duration:1,callback:()=>{
                             G_NOW_ROTATE += 5
-                            console.log(G_NOW_ROTATE,9)
+                            //console.log(G_NOW_ROTATE,9)
                             G_IS_ROTATE = false
                         }})
-                        // if(G_PAUSE) return;
-                        // G_NOW_ROTATE === 360 ? G_NOW_ROTATE = 0 : console.log('还没到360');
-                        // map.rotateTo({to:G_NOW_ROTATE,duration:1,callback:()=>{
-                        //     G_NOW_ROTATE += 5
-                        // }})
-                        // console.log(G_NOW_ROTATE)
                     },100)
                 }}); // 缩放
                 map.groupSpace = -50;
@@ -301,6 +305,9 @@ export default {
                 
                 marker.addTo(4);
             });
+        },
+        testA(){
+            console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         },
         // 发光效果
         initEffectRender(map) {

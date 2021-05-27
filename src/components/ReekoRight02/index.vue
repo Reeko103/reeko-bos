@@ -45,7 +45,9 @@ export default {
   methods: {
     navClass(index){
         this.navIndex = index
-           
+          if(index != 3){
+            this.$toast('正在接入中...')
+          }
       }
   }
 }

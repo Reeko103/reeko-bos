@@ -243,24 +243,44 @@ export default {
             console.log(e.data.length,'长连接返回值');
             switch (e.data) {
                 case '高空抛物':
-                    this.navClass (0);
-                    this.$nextTick(()=>{this.$refs.myCallThePolice.gkpw = true})
+                    this.navClass (2);
+                    this.$nextTick(()=>{
+                        this.$refs.myCallThePolice.transmitOne();
+                    })
+                    break;
+                case '人群聚集':
+                    this.navClass (7);
+                    this.$nextTick(()=>{
+                        this.$refs.myCallThePolice.transmitRqjj();
+                    })
+                    break;
+                case '电梯气压':
+                    this.navClass (6);
+                    this.$nextTick(()=>{
+                        this.$refs.myCallThePolice.transmitDtqy();
+                    })
                     break;
                 case '灯光未关':
                     this.navClass (8);
-                    this.$nextTick(()=>{this.$refs.myCallThePolice.dgwg = true})
+                    this.$nextTick(()=>{
+                        this.$refs.myCallThePolice.transmitDgwg();
+                    })
                     break;
                 case '资产移走':
                     this.navClass (8);
-                    this.$nextTick(()=>{this.$refs.myCallThePolice.zcyz = true})
+                    this.$nextTick(()=>{
+                        this.$refs.myCallThePolice.transmitZcyz();
+                    })
                     break;
                 case '危险人物':
-                    this.navClass (8);
-                    this.$nextTick(()=>{this.$refs.myCallThePolice.wxrw = true})
+                    // this.navClass (8);
+                    // this.$nextTick(()=>{this.$refs.myCallThePolice.wxrw = true})
                     break;
                 case '灭火器移走':
                     this.navClass (8);
-                    this.$nextTick(()=>{this.$refs.myCallThePolice.mhq = true})
+                    this.$nextTick(()=>{
+                        this.$refs.myCallThePolice.transmitMhq();
+                    })
                     break;
             }
             if(e.data.length > 20){

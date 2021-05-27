@@ -123,24 +123,6 @@
     <img v-if="status" @click="switchC(1)" class="switch" src="@/assets/icon/home/Building/enter.png">
     <img v-else @click="switchC(2)" class="switch" src="@/assets/icon/home/Building/out.png">
   </div>
-
-  <!-- 高空抛物事件 -->
-  <div v-if="gkpw" class="dangerousEvents animate__animated animate__rubberBand">
-    <span class="close" @click="gkpw = false">×</span>
-    <div class="cont">
-      <div class="top">
-        <img class="callThePolice01" src="@/assets/icon/home/callThePolice01.png">
-        <span><span class="large">警告</span> 待处理</span>
-      </div>
-      <p class="tips">高空抛物报警！！</p>
-    </div>
-    <button ref="s" @click="seeGkpw = true" class="see animate__animated">点击查看</button>
-  </div>
-
-  <!-- 查看 -->
-  <div v-if="seeGkpw && gkpw" @click="seeGkpw = false" class="seeDangerousEvents animate__animated animate__rubberBand">
-    <video class="vi" src="../../assets/video/video02.mp4" autoplay loop controls="controls"></video>
-  </div>
 </div>
 </template>
 
@@ -152,8 +134,6 @@ export default {
   components: { countTo  },
   data () {
     return {
-      gkpw: false,
-      seeGkpw: false,
       inAndOut: '',
       status: true,
       leftOut: '',
@@ -432,30 +412,7 @@ export default {
     }
     .switchL{width: 27px;height: 40px; position: absolute;top: calc(50% - 20px);right: -27px;z-index: 1;cursor: pointer;}
 }
-// 报警
-.dangerousEvents{position: absolute;top: 290px;right: 450px;z-index: 1;width: 278px;height: 192px; background:url("../../assets/icon/home/callThePoliceBg.png") no-repeat;background-size: 100% 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  .close{position: absolute;right: 13px;top: 0;z-index: 1;color: #E12832;font-size: 30px;cursor: pointer;}
-  .cont{
-    padding-top: 40px;
-    .top{
-      display: flex;
-      align-items: flex-end;
-      color: #D9292E;
-      font-size: 18px;
-      padding-bottom: 10px;
-      .callThePolice01{width: 43px;height: 40px;margin-right: 12px;}
-      .large{font-size: 26px;}
-    }
-    .tips{padding: 10px 0 20px;font-size: 16px;color: #ffffff;border-top: 2px solid #ffffff;}
-  }
-  .see{width: 90px;height: 32px;background: rgba(255, 17, 17, .28);border-radius: 2px;color: #FD4D5F;border: none;cursor: pointer;}
-}
-.seeDangerousEvents{position: absolute;top: 290px;right: 750px;z-index: 1;width: 278px;height: 192px;
-  .vi{width: 100%;height: 100%;object-fit:fill;}
-}
+
 
 // 右部分
 .reekoRight{

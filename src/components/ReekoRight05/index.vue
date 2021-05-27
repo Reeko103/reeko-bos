@@ -36,7 +36,7 @@ export default {
     return {
       inAndOut: '',
       status: true,
-      navIndex: -1,
+      navIndex: 0,
       navData: [{name:'B1停车场'},{name:'B2停车场'}],
       cameraStatus: false,
     }
@@ -62,8 +62,15 @@ export default {
     },
     navClass(index){
       this.navIndex = index
-           
+      if(index == 1){
+        
+        this.$toast('正在接入中...')
+        setTimeout(()=>{
+          this.navIndex = 0
+        },1000)
+        
       }
+    }
   }
 }
 </script>
