@@ -83,7 +83,7 @@ align-items: flex-end;
 .img06{width: 87px;height: 516px;position: absolute;top: 220px;right: 630px;z-index: 1;}
 // 右部分
 .reekoRight{
-    position: absolute;top: 80px;right: 12px;z-index: 1;width: 409px;height: calc(100% - 100px);
+    position: absolute;top: 80px;right: 12px;z-index: 1;width: 409px;height: 981px;
   .img05{width: 100%;height: 100%;}
 }
 </style>

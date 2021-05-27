@@ -90,7 +90,7 @@ export default {
 .camera{width: 404px;height: 318px;position: absolute;top: 150px;left: calc(50% - 202px);z-index: 1;cursor: pointer;}
 // 右部分
 .reekoRight{
-    position: absolute;top: 80px;right: 12px;z-index: 1;width: 409px;height: calc(100% - 100px);
+    position: absolute;top: 80px;right: 12px;z-index: 1;width: 409px;height: 981px;
   .content{height: calc(100% - 32px); display: flex; flex-direction: column; justify-content: space-around;
     .img01{width: 100%;height: 100%;}
   }

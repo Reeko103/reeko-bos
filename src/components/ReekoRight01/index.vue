@@ -460,7 +460,7 @@ export default {
 // 右部分
 .reekoRight{
     position: absolute;top: 80px;right: 12px;z-index: 1;width: 409px;height: calc(100% - 100px);
-  .content{height: calc(100% - 20px); display: flex; flex-direction: column; justify-content: space-around;
+  .content{height: 981px; display: flex; flex-direction: column; justify-content: space-around;
   .newImg{width: 100%;height: 100%;}
     .Title{width: 320px;height: 30px;margin: 10px 0 20px;}
     // 园区信息

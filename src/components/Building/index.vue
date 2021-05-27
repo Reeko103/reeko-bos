@@ -260,8 +260,8 @@ export default {
   data () {
     return {
       layerNumD: ['B1','F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11'], //* 楼层数据
-      layerNumI: 5,  //* 楼层索引
-      layerNumV: 'F5', //* 当前楼层
+      layerNumI: 2,  //* 楼层索引
+      layerNumV: 'F1', //* 当前楼层
       inAndOut: '',
       status: true,
       navIndex: -1,
@@ -496,7 +496,7 @@ export default {
     .active{color: #16E5EF;}
 }
 // 楼层
-.layerNum{position: absolute;top: 77px;left: calc(50% - 253px);z-index: 1; display: flex;flex-direction: column;justify-content: center;align-items: center;
+.layerNum{position: absolute;top: 80px;left: calc(50% - 253px);z-index: 1; display: flex;flex-direction: column;justify-content: center;align-items: center;
 color: #ffffff;
     .top{display: flex;align-items: center;justify-content: space-between;
         img{width: 40px;height: 40px;}
@@ -545,8 +545,8 @@ color: #ffffff;
 // 右部分
 .reekoRight{
   
-    position: absolute;top: 80px;right: 12px;z-index: 1;width: 409px;height: calc(100% - 100px); background:url("../../assets/icon/home/reekoRightBg.png") no-repeat;color: #FFFFFF;background-size: 100% 100%;
-  .content{height: calc(100% - 10px); display: flex; flex-direction: column; justify-content: space-around;
+    position: absolute;top: 80px;right: 12px;z-index: 1;width: 409px;height: 981px; 
+  .content{display: flex; flex-direction: column; justify-content: space-around;
     .img01{width: 100%;height: 100%;}
   }
   // 开关

@@ -76,15 +76,53 @@ export default {
         /// 室内-室外切换
         switchFloors(value){
             let map = this.map
+            map.groupSpace = 0;
             switch (value) {
                 case '综合总览':
                 case '指挥中心':
+                    console.log('指挥中心')
+                    G_PAUSE = false /// 开启旋转
+                    map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{
+                        map.mapScaleLevel= 19
+                    }});
+                    map.groupSpace = -100;
+                    break;
+                case '能耗环境':
+                    console.log('能耗环境')
+                    G_PAUSE = true // 暂停旋转
+                    map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{
+                        map.mapScaleLevel= 19;
+                        map.rotateTo({to: 0,duration:.5,callback:()=>{}})
+                    }});
+                    map.groupSpace = -100;
+                    break;
+                case '疫情防控': 
+                    G_PAUSE = true                  // 暂停旋转
+                    map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{
+                        map.mapScaleLevel= 19;
+                        map.rotateTo({to: 120,duration:.5,callback:()=>{}})
+                    }});
+                    map.groupSpace = -100;
+                    break;
+                case '楼栋安全':   
+                    G_PAUSE = true                  // 暂停旋转
+                    map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{
+                         map.mapScaleLevel= 19;
+                        map.rotateTo({to: 160,duration:.5,callback:()=>{}})
+                    }});
+                    map.groupSpace = -100;
+                    break;
+                case '停车场':
+                    this.camera = 1
+                    map.moveTo({ x: 11583368.743554467, y: 3575993.484689622, groupID:3, time:.5, callback:()=>{}}); /// 定位
                     G_PAUSE = false         /// 开启旋转
-                    //map.mapScaleLevel= 18
-                    map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
-                    map.scaleTo({duration:2,scale:1000,callback:()=>{
-                        map.groupSpace = -50;
-                    }}); // 缩放
+                    break;
+                case '电梯管理':
+                    G_PAUSE = true                  // 暂停旋转
+                    map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{
+                        map.rotateTo({to: 0,duration:.5,callback:()=>{}})
+                    }});
+                    map.groupSpace = -100;
                     break;
                 case '人流量':
                     this.visitorsFlowrate = 1
@@ -92,57 +130,7 @@ export default {
                     map.mapScaleLevel= 22
                     map.moveTo({ x: 11583336.912161592, y: 3576025.7743093525, groupID:2, time:.5, callback:()=>{
                         map.rotateAngle = -90
-                        
                     }}); /// 定位
-                    // var heat
-                    // /* 构造热力 */
-                    // heat = new fengmap.FMHeatMap.create(map);
-
-                    return false
-                    // /* 添加热力的数据源 */
-                    // heat.addDataSource(this.createFakeData());
-                    // /* 将热力添加到地图的指定楼层上，添加后立刻显示 */
-                    // heat.addTo(map.getFloor(map.getLevel()));
-                    // setInterval(
-                    //     ()=> {
-                    //         var fakeData = this.createFakeData();
-                    //         /* 清除热力图上的所有数据源，注意，如果不清除数据源，则新的数据源会持续向原有数据源进行追加 */
-                    //         heat.clearDataSource();
-                    //         /* 向热力图追加数据源 */
-                    //         heat.addDataSource(fakeData);
-                    //         /* 追加数据源后，调用 update() 使其生效。该方法会使用较高资源对热力图进行重绘，请在适当时机调用，避免过于频繁的调用带来性能影响 */
-                    //         heat.update();
-                    //     }, 300
-                    // )
-                    break;
-                case '能耗环境':
-                    console.log(1)
-                    G_PAUSE = true // 暂停旋转
-                    map.mapScaleLevel= 18
-                    map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
-                    // map.moveTo({ x: 11583635.618584398, y: 3576562.1645018533, groupID:1, time:.5, callback:()=>{
-                        
-                    // // map.scaleTo({duration:.5,scale:1500,update:()=>{
-                    // //     map.rotateAngle = 16    // 旋转角度
-                    // //     map.tiltAngle = 10      // 倾斜角度
-                    // // }}); // 缩放
-                    // }}); /// 定位
-                    break;
-                case '楼栋安全':
-                    map.mapScaleLevel= 18   
-                    G_PAUSE = true                  // 暂停旋转
-                    map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
-                    // map.scaleTo({duration:.5,scale:1400,callback:()=>{
-                    //    map.rotateAngle = 10    // 旋转角度
-                    // }}); // 缩放
-                    // map.rotateTo({to:20,duration:2,callback:()=>{
-                    // }}); // 缩放
-                    break;
-                case '停车场':
-                    this.camera = 1
-                    map.mapScaleLevel= 18
-                    G_PAUSE = false         /// 开启旋转
-                    map.moveTo({ x: 11583368.743554467, y: 3575993.484689622, groupID:3, time:.5, callback:()=>{}}); /// 定位
                     break;
                 case '楼层管理':
                     G_PAUSE = true                  // 暂停旋转
@@ -151,13 +139,6 @@ export default {
                         map.rotateAngle = -90
                         
                     }}); /// 定位
-                    
-                    
-                    break;
-                case '电梯管理':
-                    G_PAUSE = true // 暂停旋转
-                    map.mapScaleLevel= 18
-                     map.moveTo({ x: 11583388.641292814, y: 3576021.0869054548, groupID:1, time:.5, callback:()=>{ }});
                     break;
             }
             
@@ -238,14 +219,19 @@ export default {
                 this.$emit('changeShowRight', true)
                 map.scaleTo({duration:2,scale:1000,callback:()=>{
                     window.setInterval(()=>{
-                        //console.log(G_PAUSE,G_IS_ROTATE)
                         if(G_PAUSE || G_IS_ROTATE) return;
                         if(G_NOW_ROTATE === 360) G_NOW_ROTATE = 0;
                         G_IS_ROTATE = true
                         map.rotateTo({to:G_NOW_ROTATE,duration:1,callback:()=>{
                             G_NOW_ROTATE += 5
                             G_IS_ROTATE = false
-                        }})
+                            }})
+                        // if(G_PAUSE) return;
+                        // G_NOW_ROTATE === 360 ? G_NOW_ROTATE = 0 : console.log('还没到360');
+                        // map.rotateTo({to:G_NOW_ROTATE,duration:1,callback:()=>{
+                        //     G_NOW_ROTATE += 5
+                        // }})
+                        // console.log(G_NOW_ROTATE)
                     },100)
                 }}); // 缩放
                 map.groupSpace = -50;

@@ -23,6 +23,7 @@
           </ul>
           <img src="@/assets/icon/home/Operation/num01-2.png">
       </div>
+      <div ref="s" class="num animate__animated">{{layerNumV}}</div>
   </div>
   <div class="reekoRight animate__animated animate__bounceInRight">
       <img class="img01" src="@/assets/icon/home/PeopleCounting/img01.png">
@@ -39,6 +40,7 @@ export default {
     return {
       visitorsFlowrate: false,
       layerNumI: 1,  //* 楼层索引
+      layerNumV: 'F1', //* 当前楼层
       layerNumD: ['B1','F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11'], //* 楼层数据
     }
   },
@@ -50,6 +52,14 @@ export default {
   methods: {
     layerNumClass(index){
       this.layerNumI = index
+      this.layerNumV = this.layerNumD[index]
+      this.addNumClass() /// 楼号动画
+    },
+    addNumClass(){ /// 楼号动画
+      this.$refs.s.classList.add('animate__rubberBand');
+      setTimeout(()=>{
+          this.$refs.s.classList.remove('animate__rubberBand');
+      }, 800);
     },
   }
 }
@@ -67,7 +77,7 @@ export default {
 }
 .img06{width: 73px;height: 309px;position: absolute;top: 130px;right: 450px;z-index: 1;}
 // 楼层
-.layerNum{position: absolute;top: 130px;left: calc(50% - 253px);z-index: 1; display: flex;flex-direction: column;justify-content: center;align-items: center;
+.layerNum{position: absolute;top: 80px;left: calc(50% - 253px);z-index: 1; display: flex;flex-direction: column;justify-content: center;align-items: center;
 color: #ffffff;
     .top{display: flex;align-items: center;justify-content: space-between;
         img{width: 40px;height: 40px;}
@@ -79,7 +89,7 @@ color: #ffffff;
 }
 // 右部分
 .reekoRight{
-    position: absolute;top: 80px;right: 12px;z-index: 1;width: 409px;height: calc(100% - 100px);
+    position: absolute;top: 80px;right: 12px;z-index: 1;width: 409px;height: 981px;
     .img01{width: 100%;height: 100%;}
 }
 </style>

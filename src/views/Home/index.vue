@@ -105,7 +105,7 @@ export default {
         if (this.websock) {
             this.websock.close(); // 关闭websocket连接
         }
-        //this.initWebSocket(); // 长链接
+        this.initWebSocket(); // 长链接
     }, 
     mounted(){
     },
@@ -126,42 +126,59 @@ export default {
             //this.mainTitles()
             switch(index){
                 case 0:
-                    this.tab = 'ReekoRight01'
-                    this.$refs.mychild.switchFloors('综合总览')
+                    if(this.tab != 'ReekoRight01'){
+                        this.tab = 'ReekoRight01'
+                        this.$refs.mychild.switchFloors('综合总览')
+                    }
                     break;
                 case 1:
-                    this.tab = 'EpidemicSituation'
-                    this.$refs.mychild.switchFloors('疫情防控')
+                    if(this.tab != 'EpidemicSituation'){
+                        this.tab = 'EpidemicSituation'
+                        this.$refs.mychild.switchFloors('疫情防控')
+                    }
                     break;
                 case 2:
-                    this.tab = 'EventCenter'
-                    this.$refs.mychild.switchFloors('指挥中心')
+                    if(this.tab != 'EventCenter'){
+                        this.tab = 'EventCenter'
+                        this.$refs.mychild.switchFloors('指挥中心')
+                    }
                     break;
                 case 3:
-                    this.tab = 'ReekoRight02'
-                    this.$refs.mychild.switchFloors('能耗环境')
+                    if(this.tab != 'ReekoRight02'){
+                        this.tab = 'ReekoRight02'
+                        this.$refs.mychild.switchFloors('能耗环境')
+                    }
                     break;
                 case 4:
-                    this.tab = 'ReekoRight03'
-                    this.$refs.mychild.switchFloors('楼栋安全')
+                    if(this.tab != 'ReekoRight03'){
+                        this.tab = 'ReekoRight03'
+                        this.$refs.mychild.switchFloors('楼栋安全')
+                    }
                     break;
                 case 5:
-                    this.tab = 'ReekoRight05'
-                    this.$refs.mychild.switchFloors('停车场')
+                    if(this.tab != 'ReekoRight05'){
+                        this.tab = 'ReekoRight05'
+                        this.$refs.mychild.switchFloors('停车场')
+                    }
                     break;
                 case 6:
-                    this.tab = 'ElevatorManagement'
-                    this.$refs.mychild.switchFloors('电梯管理')
+                    if(this.tab != 'ElevatorManagement'){
+                        this.tab = 'ElevatorManagement'
+                        this.$refs.mychild.switchFloors('电梯管理')
+                    }
                     break;
                 case 7:
-                    this.tab = 'PeopleCounting'
-                    this.$refs.mychild.switchFloors('人流量')
+                    if(this.tab != 'PeopleCounting'){
+                        this.tab = 'PeopleCounting'
+                        this.$refs.mychild.switchFloors('人流量')
+                    }
                     break;
                 case 8:
-                    this.tab = 'Building'
-                    this.$refs.mychild.switchFloors('楼层管理')
+                    if(this.tab != 'Building'){
+                        this.tab = 'Building'
+                        this.$refs.mychild.switchFloors('楼层管理')
+                    }
                     break;
-                    
             }
         },
         /// 开启定时器

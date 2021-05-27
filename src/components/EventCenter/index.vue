@@ -41,8 +41,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.img01{position: absolute;top: 80px;left: 22px;z-index: 1;width: 409px;height: calc(100% - 100px);}
-.img02{position: absolute;top: 80px;right: 22px;z-index: 1;width: 409px;height: calc(100% - 100px);}
+.img01{position: absolute;top: 80px;left: 22px;z-index: 1;width: 409px;height: 981px;}
+.img02{position: absolute;top: 80px;right: 22px;z-index: 1;width: 409px;height: 981px;}
 .bottom{position: absolute;bottom: -213px;left: 446px;z-index: 1;width: 1034px;height: 213px;
   .img03{width: 100%;height: 100%;}
   // 开关
