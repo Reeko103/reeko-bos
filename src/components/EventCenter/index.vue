@@ -121,7 +121,7 @@ align-items: center;
 cursor: pointer;
   .vi{width: 100%;height: 100%;object-fit:fill;}
   .wxrw01{width: 532px;height: 322px;}
-  .wxrw02{width: 300px;height: 200px;}
+  .wxrw02{width: 532px;height: 322px;}
 }
 
 .img01{position: absolute;top: 80px;left: 22px;z-index: 1;width: 409px;height: 981px;}

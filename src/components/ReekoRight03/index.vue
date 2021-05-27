@@ -50,7 +50,7 @@ export default {
 .left{
     position: absolute;top: 64px;left: 0;z-index: 1;
     width: 420px;
-    height: calc(100% - 64px);
+    height: 1016px;
     .img03-1{width: 100%;height: 100%}
 }
 // 右部分
