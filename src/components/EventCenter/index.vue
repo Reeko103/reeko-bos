@@ -52,6 +52,10 @@ export default {
   },
   methods: {
     transmitOne(){  
+      ///
+      this.wxrw = false
+      this.seewxrw = false
+      /// 
       this.gkpw = true
       this.seeGkpw = false
       this.$nextTick(()=>{
@@ -70,6 +74,10 @@ export default {
     },
     /// 危险人物
     transmitWxrw(){  
+      ///
+      this.gkpw = false
+      this.seeGkpw = false
+      /// 
       this.wxrw = true
       this.seewxrw = false
       this.$nextTick(()=>{

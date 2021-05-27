@@ -21,6 +21,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.left{position: absolute;top: 80px;left: 11px;z-index: 1;width: 409px;height: calc(100% - 100px);}
-.right{position: absolute;top: 80px;right: 11px;z-index: 1;width: 409px;height: calc(100% - 100px);}
+.left{position: absolute;top: 80px;left: 11px;z-index: 1;width: 409px;height: 981px;}
+.right{position: absolute;top: 80px;right: 11px;z-index: 1;width: 409px;height: 981px;}
 </style>
