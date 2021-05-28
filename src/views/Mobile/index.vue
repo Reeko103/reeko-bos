@@ -32,6 +32,20 @@
           </ul>
       </div>
     </div>
+
+
+    <el-dialog
+    title="提示"
+    :show-close="false"
+    :visible.sync="dialogVisible"
+    :close-on-press-escape="false"
+    :close-on-click-modal="false"
+    width="40%">
+    <el-input class="diaI" v-model="input" placeholder="请输入密码"></el-input>
+    <span slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="handleClose">确 定</el-button>
+    </span>
+  </el-dialog>
   </div>
 </template>
 
@@ -47,12 +61,22 @@ export default {
       Data: [{name:'高空抛物',img:require('@/assets/icon/home/Mobile/img01.png')},{name:'灭火器移走',img:require('@/assets/icon/home/Mobile/img02.png')},
       {name:'灯光未关',img:require('@/assets/icon/home/Mobile/img03.png')},{name:'资产移走',img:require('@/assets/icon/home/Mobile/img04.png')},
       {name:'电梯气压',img:require('@/assets/icon/home/Mobile/img05.png')},{name:'人群聚集',img:require('@/assets/icon/home/Mobile/img06.png')},
-      {name:'危险人物',img:require('@/assets/icon/home/Mobile/img07.png')},]
+      {name:'危险人物',img:require('@/assets/icon/home/Mobile/img07.png')},],
+      dialogVisible: true,
+      input: '',
     }
   },
   methods:{
+    handleClose(done) {
+        if(this.input == 'nuoma123'){
+          this.dialogVisible = false
+          this.show = true
+        }else{
+          this.$toast('密码错误')
+        }
+    },
     changeShowRight(){
-        this.show = true
+        this.show = false
     },
     /// 报警
     callthePolice (index) {
@@ -123,6 +147,8 @@ export default {
       }
     }
   }
-    
+}
+::v-deep .el-dialog__wrapper{
+  .el-input__inner{height: 80px;}
 }
 </style>
